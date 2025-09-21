@@ -1,18 +1,26 @@
-import { Dimensions, StyleSheet, TouchableOpacity, View } from "react-native";
+import {
+  Dimensions,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import Carousel from "react-native-reanimated-carousel";
 import { Image } from "expo-image";
 import { CONSTANTS } from "@/src/constants/contants";
-
-const images = [
-  require("@/temp/home/banners/banner1.webp"),
-  require("@/temp/home/banners/banner2.webp"),
-  require("@/temp/home/banners/banner3.webp"),
-  require("@/temp/home/banners/banner4.webp"),
-];
+import { useSlideBanners } from "@/src/hooks/useBanners";
+import { ISlideBanner } from "@/src/types/banner";
 
 const width = Dimensions.get("window").width;
 
 const BannersCarousel = () => {
+  const { data: bannersData, isLoading: loadingBannersData } =
+    useSlideBanners();
+
+  if (loadingBannersData) {
+    return <Text>Loading banners...</Text>;
+  }
+
   return (
     <View style={styles.container}>
       <Carousel
@@ -20,10 +28,10 @@ const BannersCarousel = () => {
         height={width / CONSTANTS.home_banner_ratio}
         autoPlay={true}
         autoPlayInterval={5000}
-        data={images}
-        renderItem={({ item }) => (
+        data={bannersData?.Banners || []}
+        renderItem={({ item }: { item: ISlideBanner }) => (
           <TouchableOpacity style={styles.imageContainer} activeOpacity={0.8}>
-            <Image source={item} style={styles.image} />
+            <Image source={item.PictureUrl} style={styles.image} />
           </TouchableOpacity>
         )}
       />

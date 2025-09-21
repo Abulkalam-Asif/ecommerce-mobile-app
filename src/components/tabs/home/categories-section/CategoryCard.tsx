@@ -1,20 +1,29 @@
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import React from "react";
-import { Image, ImageSource } from "expo-image";
+import { Image } from "expo-image";
 import { theme } from "@/src/constants/theme";
 
 type Props = {
-  imageSource: ImageSource;
-  text: string;
+  name: string;
+  imageSource: string | undefined;
 };
 
-const CategoryCard = ({ imageSource, text }: Props) => {
+export const CategoryCardLoading = () => {
+  return (
+    <View style={styles.card}>
+      <View style={[styles.imageLoading]} />
+      <View style={[styles.textLoading]} />
+    </View>
+  );
+};
+
+const CategoryCard = ({ imageSource, name }: Props) => {
   return (
     <TouchableOpacity style={styles.card} activeOpacity={0.7}>
       <View style={styles.imageContainer}>
         <Image source={imageSource} style={styles.image} />
       </View>
-      <Text style={styles.text}>{text}</Text>
+      <Text style={styles.nameText}>{name}</Text>
     </TouchableOpacity>
   );
 };
@@ -41,7 +50,19 @@ const styles = StyleSheet.create({
     height: 60,
     objectFit: "contain",
   },
-  text: {
+  imageLoading: {
+    backgroundColor: theme.colors.background,
+    borderRadius: 12,
+    width: 84,
+    height: 84,
+  },
+  textLoading: {
+    backgroundColor: theme.colors.background,
+    borderRadius: 4,
+    width: 60,
+    height: 12,
+  },
+  nameText: {
     fontSize: 12,
     lineHeight: 12,
     fontFamily: theme.fonts.medium,

@@ -8,12 +8,14 @@ export const theme = {
     secondary_bg_1: "#fdf4e0",
     secondary_bg_2: "#e6f8d5",
     background: "#eeeeee",
-    text: "#333333ff",
-    placeholder: "#999999ff",
+    text: "#333333",
+    text_secondary: "#555555",
+    placeholder: "#999999",
   },
   fonts: {
     regular: "Poppins_400Regular",
     medium: "Poppins_500Medium",
+    semi_bold: "Poppins_600SemiBold",
     bold: "Poppins_700Bold",
   },
 };

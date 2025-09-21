@@ -4,32 +4,31 @@ import BannersCarousel from "@/src/components/tabs/home/BannersCarousel";
 import HomeSearchBar from "@/src/components/tabs/home/HomeSearchBar";
 import CategoriesSection from "@/src/components/tabs/home/categories-section/CategoriesSection";
 import ProductsSection from "@/src/components/tabs/home/ProductsSection";
-import { tempProducts } from "@/temp/home/products/products";
 import { theme } from "@/src/constants/theme";
+import { useCategories, useCategoryProducts } from "@/src/hooks/useCategories";
 
 const HomeScreen = () => {
+  const { data: categories, isLoading: loadingCategories } = useCategories();
+  const { data: categoryProductsData, isLoading: loadingCategoryProducts } =
+    useCategoryProducts(3);
+
+  if (!categoryProductsData || loadingCategories || loadingCategoryProducts) {
+    return <></>;
+  }
   return (
     <ScrollView style={styles.container}>
       <HomeSearchBar />
       <BannersCarousel />
-      <CategoriesSection />
-      <ProductsSection
-        sectionTitle="Summer Special"
-        sectionTagline="Cool deals for hot days 🔥"
-        sectionBackgroundColor={theme.colors.secondary_bg_1}
-        categoryIdForSeeAll="summer-special"
-        products={tempProducts.filter(
-          (product) => product.categoryId === "summer-special"
-        )}
+      <CategoriesSection
+        categories={categories}
+        loadingCategories={loadingCategories}
       />
       <ProductsSection
-        sectionTitle="Snack time faviorites 🍪"
-        sectionTagline="Biscuits, chocolates, nimko & more"
+        sectionTitle={categoryProductsData.Category.Name}
+        sectionTagline={categoryProductsData.Category.Description}
+        categoryIdForSeeAll={categoryProductsData.Category.Id}
+        products={categoryProductsData.Products}
         sectionBackgroundColor={theme.colors.secondary_bg_2}
-        categoryIdForSeeAll="snack-time-favorites"
-        products={tempProducts.filter(
-          (product) => product.categoryId === "snack-time-favorites"
-        )}
       />
     </ScrollView>
   );

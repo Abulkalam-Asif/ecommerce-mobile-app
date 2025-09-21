@@ -2,34 +2,50 @@ import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import React from "react";
 import { Image } from "expo-image";
 import { theme } from "@/src/constants/theme";
-import { Product } from "@/src/types";
 import { FontAwesome6 } from "@expo/vector-icons";
+import { router } from "expo-router";
+import { IProduct } from "@/src/types";
 
 type Props = {
-  product: Product;
+  product: IProduct;
 };
 
 const ProductCard = ({ product }: Props) => {
+  // PENDING: discount calculation (also on the backend)
+  // Calculate discount percentage if there's an old price
+  const discountPercentage =
+    product.OldPrice > product.Price
+      ? Math.round(
+          ((product.OldPrice - product.Price) / product.OldPrice) * 100
+        )
+      : 0;
+
   return (
     <TouchableOpacity
       style={styles.card}
       activeOpacity={1}
       onPress={() => {
-        console.log("Product pressed:", product.name);
+        router.push({
+          pathname: "/product-details",
+          params: { id: String(product.Id) },
+        });
       }}>
-      {product.discountPercentage && (
+      {discountPercentage > 0 && (
         <View style={styles.discountPercentage}>
           <Text style={styles.discountPercentageText}>
-            {product.discountPercentage}% OFF
+            {discountPercentage}% OFF
           </Text>
         </View>
       )}
       <View style={styles.imageContainer}>
-        <Image source={product.imageSource} style={styles.image} />
+        <Image
+          source={product.MainImageUrl || product.ThumbnailUrl}
+          style={styles.image}
+        />
         <View style={styles.addToCartContainer}>
           <TouchableOpacity
             onPress={() => {
-              console.log("Add to cart pressed for:", product.name);
+              console.log("Add to cart pressed for:", product.Name);
             }}
             activeOpacity={0.7}>
             <FontAwesome6 name="plus" size={16} color={"#fff"} />
@@ -37,18 +53,12 @@ const ProductCard = ({ product }: Props) => {
         </View>
       </View>
       <Text style={styles.nameText} numberOfLines={2} ellipsizeMode="tail">
-        {product.name}
+        {product.Name}
       </Text>
       <View style={styles.priceContainer}>
-        <Text style={styles.priceText}>Rs. {product.price}</Text>
-        {product.discountPercentage && (
-          <Text style={styles.discountText}>
-            Rs.
-            {(
-              product.price -
-              (product.price * product.discountPercentage) / 100
-            ).toFixed(0)}
-          </Text>
+        <Text style={styles.priceText}>Rs. {product.Price}</Text>
+        {discountPercentage > 0 && (
+          <Text style={styles.discountText}>Rs. {product.OldPrice}</Text>
         )}
       </View>
     </TouchableOpacity>

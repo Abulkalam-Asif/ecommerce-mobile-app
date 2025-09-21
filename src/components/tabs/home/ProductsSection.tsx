@@ -7,15 +7,15 @@ import {
 } from "react-native";
 import React from "react";
 import { theme } from "@/src/constants/theme";
-import { Product } from "@/src/types";
 import ProductCard from "./ProductCard";
+import { IProduct } from "@/src/hooks/useProducts";
 
 type ProductsSectionProps = {
   sectionTitle: string;
   sectionTagline?: string;
   sectionBackgroundColor?: string;
-  categoryIdForSeeAll?: string;
-  products?: Product[];
+  categoryIdForSeeAll?: number;
+  products?: IProduct[];
 };
 
 const ProductsSection = ({
@@ -45,9 +45,11 @@ const ProductsSection = ({
         horizontal
         showsHorizontalScrollIndicator={false}
         contentContainerStyle={styles.scrollContent}>
-        {products?.map((product) => (
-          <ProductCard key={product.id} product={product} />
-        ))}
+        {products &&
+          products.length > 0 &&
+          products?.map((product) => (
+            <ProductCard key={product.Id} product={product} />
+          ))}
       </ScrollView>
     </View>
   );
