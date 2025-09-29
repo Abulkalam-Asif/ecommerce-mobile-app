@@ -8,7 +8,7 @@ export default function TabsLayout() {
     <Tabs
       tabBar={(props) => <CustomTabBar {...props} />}
       screenOptions={{
-        tabBarActiveTintColor: theme.colors.primary,
+        // tabBarActiveTintColor: theme.colors.primary,
         headerShown: false,
       }}>
       <Tabs.Screen
@@ -36,9 +36,9 @@ export default function TabsLayout() {
         }}
       />
       <Tabs.Screen
-        name="account"
+        name="profile"
         options={{
-          title: "Account",
+          title: "Profile",
         }}
       />
     </Tabs>

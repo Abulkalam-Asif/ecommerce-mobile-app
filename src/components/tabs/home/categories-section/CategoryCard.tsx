@@ -3,9 +3,10 @@ import React from "react";
 import { Image } from "expo-image";
 import { theme } from "@/src/constants/theme";
 
-type Props = {
+type CategoryCardProps = {
   name: string;
   imageSource: string | undefined;
+  backgroundColor?: string;
 };
 
 export const CategoryCardLoading = () => {
@@ -17,10 +18,14 @@ export const CategoryCardLoading = () => {
   );
 };
 
-const CategoryCard = ({ imageSource, name }: Props) => {
+const CategoryCard = ({
+  imageSource,
+  name,
+  backgroundColor,
+}: CategoryCardProps) => {
   return (
     <TouchableOpacity style={styles.card} activeOpacity={0.7}>
-      <View style={styles.imageContainer}>
+      <View style={[styles.imageContainer, { backgroundColor }]}>
         <Image source={imageSource} style={styles.image} />
       </View>
       <Text style={styles.nameText}>{name}</Text>
@@ -35,19 +40,18 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "flex-start",
     gap: 8,
-    width: 92,
-    height: 130,
+    width: 90,
+    height: 120,
   },
   imageContainer: {
-    backgroundColor: theme.colors.background,
-    borderRadius: 12,
+    borderRadius: 16,
     padding: 16,
     justifyContent: "center",
     alignItems: "center",
   },
   image: {
-    width: 60,
-    height: 60,
+    width: 48,
+    height: 48,
     objectFit: "contain",
   },
   imageLoading: {

@@ -74,9 +74,10 @@ const styles = StyleSheet.create({
   container: {
     paddingHorizontal: 12,
     paddingVertical: 12,
+    backgroundColor: "#fff",
     flexDirection: "column",
     alignItems: "center",
-    boxShadow: "0px -4px 6px rgba(0, 0, 0, 0.1)",
+    boxShadow: "0px -4px 6px 0 rgba(0, 0, 0, 0.1)",
     gap: 8,
   },
 

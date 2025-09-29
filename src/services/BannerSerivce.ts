@@ -1,13 +1,12 @@
-import { apiClient } from "../api";
-import { ISlideBanner } from "../types/banner";
+import { apiClient } from "../api/client";
+import { IBanner } from "../types/banner";
 
 class BannerService {
-  async getSlideBanners(): Promise<{
-    Banners: ISlideBanner[];
-    TotalCount: number;
-    ActiveCount: number;
-  }> {
-    return apiClient.get(`/api/slide-promotion-banners`);
+  async getActiveSlideBanners(): Promise<IBanner[]> {
+    return apiClient.get(`/api/slide-promotion-banners/active`);
+  }
+  async getMainBanner(): Promise<IBanner> {
+    return apiClient.get(`/api/slide-promotion-banners/main`);
   }
 }
 

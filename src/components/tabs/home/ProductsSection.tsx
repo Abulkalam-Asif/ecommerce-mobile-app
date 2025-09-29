@@ -8,47 +8,37 @@ import {
 import React from "react";
 import { theme } from "@/src/constants/theme";
 import ProductCard from "./ProductCard";
-import { IProduct } from "@/src/hooks/useProducts";
+import { ICategory, IProduct } from "@/src/types";
 
 type ProductsSectionProps = {
-  sectionTitle: string;
-  sectionTagline?: string;
+  category: ICategory;
   sectionBackgroundColor?: string;
-  categoryIdForSeeAll?: number;
   products?: IProduct[];
 };
 
 const ProductsSection = ({
-  sectionTitle,
-  sectionTagline,
+  category,
   sectionBackgroundColor,
-  categoryIdForSeeAll,
   products,
 }: ProductsSectionProps) => {
   return (
-    <View
-      style={[styles.container, { backgroundColor: sectionBackgroundColor }]}>
-      <View style={styles.headerContainer}>
-        <View style={styles.titleContainer}>
-          <Text style={styles.titleText}>{sectionTitle}</Text>
-          {sectionTagline && (
-            <Text style={styles.taglineText}>{sectionTagline}</Text>
-          )}
-        </View>
-        {categoryIdForSeeAll && (
-          <TouchableOpacity>
-            <Text style={styles.seeAllText}>See All</Text>
-          </TouchableOpacity>
-        )}
-      </View>
+    <View style={[styles.container]}>
+      <Text style={styles.titleText}>{category.Name}</Text>
       <ScrollView
         horizontal
         showsHorizontalScrollIndicator={false}
-        contentContainerStyle={styles.scrollContent}>
+        contentContainerStyle={[
+          styles.scrollContent,
+          { backgroundColor: sectionBackgroundColor },
+        ]}>
         {products &&
           products.length > 0 &&
           products?.map((product) => (
-            <ProductCard key={product.Id} product={product} />
+            <ProductCard
+              key={product.Id}
+              product={product}
+              category={category}
+            />
           ))}
       </ScrollView>
     </View>
@@ -59,36 +49,18 @@ export default ProductsSection;
 
 const styles = StyleSheet.create({
   container: {
-    paddingHorizontal: 12,
     paddingVertical: 20,
   },
-  headerContainer: {
-    marginBottom: 8,
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "flex-start",
-  },
-  titleContainer: {
-    marginBottom: 12,
-  },
   titleText: {
+    fontFamily: theme.fonts.semi_bold,
     fontSize: 16,
-    lineHeight: 20,
-    fontFamily: theme.fonts.medium,
-    color: theme.colors.primary_darker,
-  },
-  taglineText: {
-    fontSize: 12,
-    fontFamily: theme.fonts.regular,
-    color: theme.colors.text,
-  },
-  seeAllText: {
-    fontSize: 14,
-    fontFamily: theme.fonts.regular,
-    color: theme.colors.text,
+    marginBottom: 12,
+    paddingHorizontal: 24,
   },
   scrollContent: {
     flexDirection: "row",
     gap: 12,
+    paddingHorizontal: 24,
+    paddingVertical: 20,
   },
 });

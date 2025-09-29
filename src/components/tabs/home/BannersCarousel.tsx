@@ -8,32 +8,66 @@ import {
 import Carousel from "react-native-reanimated-carousel";
 import { Image } from "expo-image";
 import { CONSTANTS } from "@/src/constants/contants";
-import { useSlideBanners } from "@/src/hooks/useBanners";
-import { ISlideBanner } from "@/src/types/banner";
+// import { useActiveSlideBanners } from "@/src/hooks/useBanners";
+import { IBanner } from "@/src/types/banner";
+import { theme } from "@/src/constants/theme";
+import { useRef, useState } from "react";
+import BannerAnimatedDots from "./BannerAnimatedDots";
+import { tempBanners } from "@/temp/home/banners/tempBanners";
 
 const width = Dimensions.get("window").width;
 
 const BannersCarousel = () => {
-  const { data: bannersData, isLoading: loadingBannersData } =
-    useSlideBanners();
+  // const { data: bannersData, isLoading: loadingBannersData } = useActiveSlideBanners();
+  const bannersData = tempBanners;
+  // Calculate card width to show main card fully + partial next card
+  const cardWidth = width * 0.85; // Main card takes 85% of screen
+  const cardSpacing = 16; // Space between cards
 
-  if (loadingBannersData) {
-    return <Text>Loading banners...</Text>;
-  }
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const carouselRef = useRef<any>(null);
+
+  // Handle dot click navigation
+  const handleDotPress = (index: number) => {
+    setCurrentIndex(index);
+    if (carouselRef.current) {
+      carouselRef.current.scrollTo({ index, animated: true });
+    }
+  };
+
+  // if (loadingBannersData) {
+  //   return <Text>Loading banners...</Text>;
+  // }
 
   return (
     <View style={styles.container}>
+      <Text style={styles.sectionTitleText}>Find your Best Deals</Text>
       <Carousel
-        width={width}
-        height={width / CONSTANTS.home_banner_ratio}
+        width={cardWidth}
+        ref={carouselRef}
+        height={cardWidth / CONSTANTS.home_banner_ratio}
+        style={{ width: width }}
         autoPlay={true}
         autoPlayInterval={5000}
-        data={bannersData?.Banners || []}
-        renderItem={({ item }: { item: ISlideBanner }) => (
-          <TouchableOpacity style={styles.imageContainer} activeOpacity={0.8}>
+        data={bannersData || []}
+        mode="parallax"
+        onSnapToItem={(index) => setCurrentIndex(index)}
+        modeConfig={{
+          parallaxScrollingScale: 0.9,
+          parallaxScrollingOffset: 40,
+        }}
+        renderItem={({ item }: { item: IBanner; index: number }) => (
+          <TouchableOpacity
+            style={[styles.imageContainer, { width: cardWidth - cardSpacing }]}
+            activeOpacity={0.8}>
             <Image source={item.PictureUrl} style={styles.image} />
           </TouchableOpacity>
         )}
+      />
+      <BannerAnimatedDots
+        bannersCount={bannersData ? bannersData.length : 0}
+        currentIndex={currentIndex}
+        handleDotPress={handleDotPress}
       />
     </View>
   );
@@ -43,15 +77,31 @@ export default BannersCarousel;
 
 const styles = StyleSheet.create({
   container: {
-    paddingTop: 16,
+    marginBottom: 30,
+  },
+  sectionTitleText: {
+    fontFamily: theme.fonts.semi_bold,
+    fontSize: 16,
+    marginBottom: 8,
+    paddingLeft: 24,
+    color: "#fff",
   },
   imageContainer: {
-    paddingHorizontal: 12,
+    justifyContent: "center",
+    alignItems: "center",
   },
   image: {
     width: "100%",
     height: "100%",
     objectFit: "cover",
-    borderRadius: 20,
+    borderRadius: width * 0.025,
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
   },
 });

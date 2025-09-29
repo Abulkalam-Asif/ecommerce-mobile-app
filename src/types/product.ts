@@ -1,17 +1,16 @@
 export interface IProduct {
   Id: number;
   Name: string;
-  ShortDescription: string;
-  Sku: string;
   Price: number;
-  OldPrice: number;
-  MainImageUrl: string;
-  ThumbnailUrl: string;
-  InStock: boolean;
-  StockAvailability: string;
-  HasDiscounts: boolean;
-  CreatedOnUtc: string;
-  UpdatedOnUtc: string;
+  ShortDescription?: string;
+  OldPrice?: number;
+  MainImageUrl?: string;
+  ThumbnailUrl?: string;
+  InStock?: boolean;
+  StockAvailability?: string;
+  HasDiscounts?: boolean;
+  CreatedOnUtc?: string;
+  UpdatedOnUtc?: string;
 }
 
 export interface IProductImage {
@@ -46,7 +45,7 @@ export interface IProductDetails extends IProduct {
   Specifications: IProductSpecification[];
   StockInfo: IProductStockInfo;
   MinimumQuantity: number;
-  
+
   ManufacturerPartNumber: string;
   Gtin: string;
   DisableWishlistButton: boolean;
@@ -59,5 +58,4 @@ export interface IProductDetails extends IProduct {
   Width: number;
   Height: number;
   Images: IProductImage[];
-
 }

@@ -1,7 +1,7 @@
 import axios, { AxiosInstance } from "axios";
 import * as SecureStore from "expo-secure-store";
 
-const API_BASE = "http://192.168.1.6:5000";
+const API_BASE = "http://192.168.1.4:5000";
 
 class ApiClient {
   private axios: AxiosInstance;

@@ -33,4 +33,5 @@ export const queryKeys = {
   product: (id: number) => ["products", id] as const,
 
   slideBanners: ["slideBanners"] as const,
+  mainBanner: ["mainBanner"] as const,
 };

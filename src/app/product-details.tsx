@@ -4,6 +4,7 @@ import { useLocalSearchParams } from "expo-router";
 import { useProduct } from "../hooks/useProducts";
 import Backdrop from "../components/product-details/Backdrop";
 import ProductContent from "../components/product-details/ProductContent";
+import { theme } from "../constants/theme";
 
 const { height: SCREEN_HEIGHT } = Dimensions.get("window");
 const MODAL_HEIGHT = SCREEN_HEIGHT * 0.85;
@@ -11,7 +12,7 @@ const MODAL_HEIGHT = SCREEN_HEIGHT * 0.85;
 export default function ProductDetailsScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
 
-  const { data: product, isLoading } = useProduct(Number(id));
+  // const { data: product, isLoading } = useProduct(Number(id));
 
   // Animation values
   const translateY = useRef(new Animated.Value(MODAL_HEIGHT)).current;
@@ -76,7 +77,7 @@ export default function ProductDetailsScreen() {
             transform: [{ translateY }],
           },
         ]}>
-        <ProductContent product={product} isLoading={isLoading} />
+        {/* <ProductContent product={product} isLoading={isLoading} /> */}
       </Animated.View>
     </View>
   );
@@ -88,11 +89,11 @@ const styles = StyleSheet.create({
     justifyContent: "flex-end",
   },
   modalContainer: {
-    backgroundColor: "#fff",
+    backgroundColor: theme.colors.primary_lightest,
+    height: MODAL_HEIGHT,
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
-    height: MODAL_HEIGHT,
-    paddingTop: 20,
+    overflow: "hidden",
   },
   loading: {
     justifyContent: "center",
