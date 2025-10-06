@@ -5,7 +5,7 @@ export const theme = {
     secondary: "#CB8404",
     text: "#222222",
     text_secondary: "#555555",
-    placeholder: "#999999",
+    placeholder: "#8d8d8d",
     background: "#E0E0E0",
     background_2: "#FFF1D3",
     background_3: "#FAFAFA",
@@ -24,7 +24,7 @@ export const theme = {
   fonts: {
     regular: "Poppins_400Regular",
     medium: "Poppins_500Medium",
-    semi_bold: "Poppins_600SemiBold",
+    semibold: "Poppins_600SemiBold",
     bold: "Poppins_700Bold",
   },
 };

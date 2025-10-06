@@ -40,7 +40,7 @@ const styles = StyleSheet.create({
     paddingVertical: 16,
   },
   categoryNameText: {
-    fontFamily: theme.fonts.semi_bold,
+    fontFamily: theme.fonts.semibold,
     fontSize: 22,
     flex: 1,
     textAlign: "center",

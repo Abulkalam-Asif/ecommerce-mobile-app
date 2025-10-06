@@ -52,6 +52,7 @@ const styles = StyleSheet.create({
     padding: 16,
     justifyContent: "center",
     alignItems: "center",
+    elevation: 4,
   },
   image: {
     width: 48,

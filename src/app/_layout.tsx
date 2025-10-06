@@ -6,6 +6,7 @@ import { QueryClientProvider } from "@tanstack/react-query";
 import useMyFonts from "../hooks/useMyFonts";
 import { queryClient } from "../lib/react-query";
 import { theme } from "../constants/theme";
+import { ModalProvider } from "../contexts/ModalContext";
 
 export default function RootLayout() {
   const fontsLoaded = useMyFonts();
@@ -13,17 +14,19 @@ export default function RootLayout() {
   return fontsLoaded ? (
     <QueryClientProvider client={queryClient}>
       <SafeAreaProvider>
-        <SafeAreaView style={{ flex: 1 }}>
-          <StatusBar style="auto" backgroundColor={theme.colors.primary} />
-          <Stack
-            screenOptions={{
-              headerShown: false,
-            }}>
-            <Stack.Screen name="index" />
-            <Stack.Screen name="(tabs)" />
-            <Stack.Screen name="product-details" />
-          </Stack>
-        </SafeAreaView>
+        <ModalProvider>
+          <SafeAreaView style={{ flex: 1 }}>
+            <StatusBar style="auto" backgroundColor={theme.colors.primary} />
+            <Stack
+              screenOptions={{
+                headerShown: false,
+              }}>
+              <Stack.Screen name="index" />
+              <Stack.Screen name="(tabs)" />
+              <Stack.Screen name="product-details" />
+            </Stack>
+          </SafeAreaView>
+        </ModalProvider>
       </SafeAreaProvider>
     </QueryClientProvider>
   ) : null;

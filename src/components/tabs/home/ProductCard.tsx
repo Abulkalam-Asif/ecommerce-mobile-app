@@ -8,10 +8,10 @@ import { IProduct } from "@/src/types";
 
 type Props = {
   product: IProduct;
-  hasBackground?: boolean;
+  cardWidth?: number | `${number}%`;
 };
 
-const ProductCard = ({ product, hasBackground = false }: Props) => {
+const ProductCard = ({ product, cardWidth = 180 }: Props) => {
   const [quantityInCart, setQuantityInCart] = useState(0);
 
   const handleProductPress = () => {
@@ -23,7 +23,12 @@ const ProductCard = ({ product, hasBackground = false }: Props) => {
 
   return (
     <Pressable
-      style={[styles.card, hasBackground && styles.cardBackground]}
+      style={[
+        styles.card,
+        {
+          width: cardWidth,
+        },
+      ]}
       onPress={handleProductPress}>
       {product.OldPrice && product.OldPrice > product.Price && (
         <Text style={styles.discountText}>
@@ -87,13 +92,10 @@ export default ProductCard;
 const styles = StyleSheet.create({
   card: {
     justifyContent: "flex-start",
-    backgroundColor: "#fff",
     borderRadius: 16,
     padding: 10,
-    width: 180,
     position: "relative",
-  },
-  cardBackground: {
+    elevation: 4,
     backgroundColor: theme.colors.background_3,
   },
   discountText: {
@@ -133,7 +135,7 @@ const styles = StyleSheet.create({
   },
   priceText: {
     fontSize: 12,
-    fontFamily: theme.fonts.semi_bold,
+    fontFamily: theme.fonts.semibold,
     color: theme.colors.secondary,
   },
   oldPriceText: {

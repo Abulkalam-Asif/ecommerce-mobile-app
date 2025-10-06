@@ -7,21 +7,18 @@ type CategoriesNavProps = {
   categories: {
     Category: ICategory;
     Products: IProduct[];
+    SubCategories: ICategory[];
   }[];
-  currentCategory: {
-    Category: ICategory;
-    Products: IProduct[];
-  };
-  setCurrentCategory: (category: {
-    Category: ICategory;
-    Products: IProduct[];
-  }) => void;
+  currentCategoryId: number;
+  setCurrentCategoryId: (id: number) => void;
+  setCurrentSubCategoryId: (id: number) => void;
 };
 
 const CategoriesNav = ({
   categories,
-  currentCategory,
-  setCurrentCategory,
+  currentCategoryId,
+  setCurrentCategoryId,
+  setCurrentSubCategoryId,
 }: CategoriesNavProps) => {
   return (
     <ScrollView
@@ -32,19 +29,21 @@ const CategoriesNav = ({
       {categories.map((category) => (
         <Pressable
           key={category.Category.Id}
-          onPress={() => setCurrentCategory(category)}
+          onPress={() => {
+            setCurrentCategoryId(category.Category.Id);
+            setCurrentSubCategoryId(category.SubCategories[0].Id);
+          }}
           style={({ pressed }) => [
             styles.categoryButton,
-            currentCategory.Category.Id === category.Category.Id &&
-              styles.selectedCategory,
+            currentCategoryId === category.Category.Id &&
+              styles.categoryButtonSelected,
             pressed && styles.categoryButtonPressed,
           ]}>
           <Text
             style={[
               styles.categoryNameText,
-              currentCategory.Category.Id === category.Category.Id
-                ? styles.selectedCategoryText
-                : styles.unselectedCategoryNameText,
+              currentCategoryId === category.Category.Id &&
+                styles.selectedCategoryText,
             ]}>
             {category.Category.Name}
           </Text>
@@ -67,22 +66,21 @@ const styles = StyleSheet.create({
     borderBottomColor: theme.colors.placeholder,
   },
 
-  selectedCategory: {
-    borderBottomWidth: 2,
-    borderBottomColor: theme.colors.primary,
-  },
   categoryButton: {
     paddingTop: 4,
     paddingHorizontal: 10,
   },
-  categoryButtonPressed: {
-    backgroundColor: theme.colors.primary_light,
+  categoryButtonSelected: {
+    borderBottomWidth: 2,
+    borderBottomColor: theme.colors.primary,
   },
+  categoryButtonPressed: {
+    backgroundColor: "rgba(0, 0, 0, 0.05)",
+  },
+
   categoryNameText: {
     fontSize: 12,
-    fontFamily: theme.fonts.semi_bold,
-  },
-  unselectedCategoryNameText: {
+    fontFamily: theme.fonts.semibold,
     color: theme.colors.text_secondary,
   },
   selectedCategoryText: {

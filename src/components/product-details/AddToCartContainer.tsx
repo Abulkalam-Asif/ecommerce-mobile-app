@@ -81,11 +81,11 @@ const styles = StyleSheet.create({
   },
   amountText: {
     fontSize: 16,
-    fontFamily: theme.fonts.semi_bold,
+    fontFamily: theme.fonts.semibold,
   },
   amountValueText: {
     fontSize: 16,
-    fontFamily: theme.fonts.semi_bold,
+    fontFamily: theme.fonts.semibold,
     color: theme.colors.secondary,
   },
 
@@ -129,6 +129,6 @@ const styles = StyleSheet.create({
   addToCartText: {
     color: "#fff",
     textAlign: "center",
-    fontFamily: theme.fonts.semi_bold,
+    fontFamily: theme.fonts.semibold,
   },
 });

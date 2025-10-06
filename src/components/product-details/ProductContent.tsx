@@ -189,7 +189,7 @@ const styles = StyleSheet.create({
     fontSize: 18,
     lineHeight: 24,
     color: theme.colors.text,
-    fontFamily: theme.fonts.semi_bold,
+    fontFamily: theme.fonts.semibold,
     flex: 1,
   },
   ratingSectionButton: {
@@ -220,7 +220,7 @@ const styles = StyleSheet.create({
   },
   currentPriceText: {
     fontSize: 16,
-    fontFamily: theme.fonts.semi_bold,
+    fontFamily: theme.fonts.semibold,
     color: theme.colors.secondary,
   },
   oldPriceText: {
@@ -233,7 +233,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#FBBE36",
     fontSize: 8,
     lineHeight: 16,
-    fontFamily: theme.fonts.semi_bold,
+    fontFamily: theme.fonts.semibold,
     paddingHorizontal: 6,
     paddingVertical: 2,
     borderRadius: 10,
@@ -250,7 +250,7 @@ const styles = StyleSheet.create({
   },
   descriptionTitleText: {
     fontSize: 16,
-    fontFamily: theme.fonts.semi_bold,
+    fontFamily: theme.fonts.semibold,
     marginBottom: 4,
   },
   descriptionText: {
@@ -260,7 +260,7 @@ const styles = StyleSheet.create({
   },
   showLessMoreText: {
     color: theme.colors.primary,
-    fontFamily: theme.fonts.semi_bold,
+    fontFamily: theme.fonts.semibold,
   },
 
   loadingContainer: {

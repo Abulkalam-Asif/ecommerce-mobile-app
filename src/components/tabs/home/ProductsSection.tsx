@@ -42,7 +42,7 @@ const styles = StyleSheet.create({
     paddingVertical: 20,
   },
   titleText: {
-    fontFamily: theme.fonts.semi_bold,
+    fontFamily: theme.fonts.semibold,
     fontSize: 16,
     marginBottom: 12,
     paddingHorizontal: 20,

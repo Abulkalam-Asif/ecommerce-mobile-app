@@ -95,7 +95,7 @@ const styles = StyleSheet.create({
   sectionTitleText: {
     fontSize: 16,
     lineHeight: 20,
-    fontFamily: theme.fonts.semi_bold,
+    fontFamily: theme.fonts.semibold,
   },
   viewAllText: {
     fontFamily: theme.fonts.medium,

@@ -58,16 +58,16 @@ export default BestPricesSection;
 
 const styles = StyleSheet.create({
   container: {
-    marginBottom: 30,
+    marginBottom: 10,
   },
   sectionTitleText: {
-    fontFamily: theme.fonts.semi_bold,
+    fontFamily: theme.fonts.semibold,
     fontSize: 16,
-    marginBottom: 8,
     paddingLeft: 20,
   },
   scrollContent: {
     paddingHorizontal: 20,
+    paddingVertical: 20,
     flexDirection: "row",
     gap: 20,
   },
@@ -82,10 +82,11 @@ const styles = StyleSheet.create({
     gap: 12,
     position: "relative",
     overflow: "hidden",
+    elevation: 4,
   },
   discountPercentageText: {
     fontSize: 12,
-    fontFamily: theme.fonts.semi_bold,
+    fontFamily: theme.fonts.semibold,
     position: "absolute",
     top: 12,
     left: -25,
@@ -102,6 +103,6 @@ const styles = StyleSheet.create({
   },
   discountText: {
     fontSize: 12,
-    fontFamily: theme.fonts.semi_bold,
+    fontFamily: theme.fonts.semibold,
   },
 });

@@ -31,7 +31,7 @@ const styles = StyleSheet.create({
   },
   boughtTogetherText: {
     fontSize: 16,
-    fontFamily: theme.fonts.semi_bold,
+    fontFamily: theme.fonts.semibold,
   },
   scrollContent: {
     flexDirection: "row",

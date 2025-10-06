@@ -21,7 +21,6 @@ const ProductsSection = ({ sectionTitle, products }: SimilarProductsProps) => {
           <ProductCard
             key={product.Id}
             product={product}
-            hasBackground={true}
           />
         ))}
       </ScrollView>
@@ -37,7 +36,7 @@ const styles = StyleSheet.create({
   },
   titleText: {
     fontSize: 16,
-    fontFamily: theme.fonts.semi_bold,
+    fontFamily: theme.fonts.semibold,
     paddingHorizontal: 20,
   },
   scrollContent: {

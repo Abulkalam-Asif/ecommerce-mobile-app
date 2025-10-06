@@ -67,7 +67,7 @@ const styles = StyleSheet.create({
     marginBottom: 30,
   },
   sectionTitleText: {
-    fontFamily: theme.fonts.semi_bold,
+    fontFamily: theme.fonts.semibold,
     fontSize: 16,
     marginBottom: 8,
     paddingLeft: 20,
