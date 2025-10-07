@@ -8,6 +8,7 @@ import ProductDetailsTopBg from "./ProductDetailsTopBg";
 import ProductDetailsTopBar from "./ProductDetailsTopBar";
 import { Entypo, FontAwesome6 } from "@expo/vector-icons";
 import ProductsSection from "./ProductsSection";
+import { router } from "expo-router";
 
 type ProductContentProps = {
   product: IProductDetails | undefined;
@@ -70,7 +71,13 @@ const ProductContent = ({ product, isLoading }: ProductContentProps) => {
                 style={({ pressed }) => [
                   styles.ratingSectionButton,
                   pressed && styles.ratingSectionButtonPressed,
-                ]}>
+                ]}
+                onPress={() => {
+                  router.push({
+                    pathname: "/product-details/reviews",
+                    params: { id: String(product.Id) },
+                  });
+                }}>
                 <Entypo name="star" size={18} color={"#FFBB22"} />
                 <Text style={styles.ratingText}>
                   {product.ApprovedRatingSum} ({product.ApprovedTotalReviews}{" "}

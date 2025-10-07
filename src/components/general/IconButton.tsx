@@ -5,9 +5,10 @@ type IconButtonProps = {
   icon: React.ReactNode;
   onPress?: () => void;
   size?: number;
+  style?: object;
 };
 
-const IconButton = ({ icon, onPress, size = 44 }: IconButtonProps) => {
+const IconButton = ({ icon, onPress, size = 44, style }: IconButtonProps) => {
   const scaleAnim = useRef(new Animated.Value(1)).current;
   const rippleAnim = useRef(new Animated.Value(0)).current;
 
@@ -60,6 +61,7 @@ const IconButton = ({ icon, onPress, size = 44 }: IconButtonProps) => {
           borderRadius: size / 2,
           transform: [{ scale: scaleAnim }],
         },
+        style,
       ]}>
       <Pressable
         style={[styles.button, { borderRadius: size / 2 }]}

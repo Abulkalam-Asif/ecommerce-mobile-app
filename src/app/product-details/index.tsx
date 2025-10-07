@@ -1,5 +1,5 @@
 import React from "react";
-import ProductContent from "../components/product-details/ProductContent";
+import ProductContent from "@/src/components/product-details/ProductContent";
 import { tempProductDetails } from "@/temp/home/product-details/tempProductDetails";
 
 export default function ProductDetailsScreen() {
