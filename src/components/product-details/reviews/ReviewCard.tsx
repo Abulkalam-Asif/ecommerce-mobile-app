@@ -9,6 +9,26 @@ type ReviewCardProps = {
   review: IReview;
 };
 
+// convert time to minutes ago, hours ago, days ago format
+const formatTimeAgo = (dateString: string) => {
+  const date = new Date(dateString);
+  const now = new Date();
+  const diffInSeconds = Math.floor((now.getTime() - date.getTime()) / 1000);
+
+  if (diffInSeconds < 60) {
+    return `${diffInSeconds} seconds ago`;
+  } else if (diffInSeconds < 3600) {
+    const minutes = Math.floor(diffInSeconds / 60);
+    return `${minutes} minutes ago`;
+  } else if (diffInSeconds < 86400) {
+    const hours = Math.floor(diffInSeconds / 3600);
+    return `${hours} hours ago`;
+  } else {
+    const days = Math.floor(diffInSeconds / 86400);
+    return `${days} days ago`;
+  }
+};
+
 const ReviewCard = (ReviewCardprops: ReviewCardProps) => {
   return (
     <View style={styles.container}>
@@ -24,7 +44,7 @@ const ReviewCard = (ReviewCardprops: ReviewCardProps) => {
             {ReviewCardprops.review.CustomerName}
           </Text>
           <Text style={styles.reviewDateText}>
-            {ReviewCardprops.review.CreatedOnUtc}
+            {formatTimeAgo(ReviewCardprops.review.CreatedOnUtc)}
           </Text>
         </View>
         <View style={styles.rating}>
@@ -46,6 +66,7 @@ const styles = StyleSheet.create({
     backgroundColor: theme.colors.background_3,
     padding: 16,
     borderRadius: 8,
+    elevation: 1,
   },
   topSection: {
     flexDirection: "row",
@@ -66,9 +87,6 @@ const styles = StyleSheet.create({
     fontFamily: theme.fonts.regular,
     fontSize: 12,
   },
-  reviewText: {
-    marginVertical: 4,
-  },
   rating: {
     flexDirection: "row",
     alignItems: "center",
@@ -79,5 +97,11 @@ const styles = StyleSheet.create({
   ratingText: {
     marginLeft: 4,
     fontFamily: theme.fonts.medium,
+  },
+  reviewText: {
+    paddingVertical: 10,
+    color: theme.colors.text_secondary,
+    fontFamily: theme.fonts.regular,
+    fontSize: 12,
   },
 });
