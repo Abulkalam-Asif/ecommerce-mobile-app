@@ -89,7 +89,7 @@ const CustomTabBar: React.FC<BottomTabBarProps> = ({
       <View style={styles.tabBar}>
         {state.routes.map((route, index) => {
           const { options } = descriptors[route.key];
-          const label = options.title || route.name;
+          const label = options.title;
           const isFocused = state.index === index;
 
           // Reserve space for the quick-order (floating) button so all tabs have equal width

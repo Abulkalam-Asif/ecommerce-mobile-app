@@ -4,8 +4,10 @@ import GeneralTopBar from "@/src/components/general/GeneralTopBar";
 import CartItem from "@/src/components/tabs/cart/CartItem";
 import { tempCartItems } from "@/temp/home/products/tempCartItems";
 import { theme } from "@/src/constants/theme";
+import { router } from "expo-router";
 
 export default function CartScreen() {
+  const isLoggedIn = true;
   const [cartItems, setCartItems] = useState(tempCartItems);
 
   const handleQuantityChange = (id: number, newQuantity: number) => {
@@ -57,15 +59,30 @@ export default function CartScreen() {
 
         <View style={styles.amountRow}>
           <Text style={styles.amountLabel}>Amount</Text>
-          <Text style={styles.amountValue}>Rs. 880</Text>
+          <Text style={styles.amountValue}>
+            Rs.{" "}
+            {cartItems.reduce(
+              (total, item) => total + item.Price * item.quantity,
+              0
+            )}
+          </Text>
         </View>
 
         <Pressable
           style={({ pressed }) => [
-            styles.loginButton,
-            pressed && styles.loginButtonPressed,
-          ]}>
-          <Text style={styles.loginButtonText}>Login /Create Account</Text>
+            styles.proceedButton,
+            pressed && styles.proceedButtonPressed,
+          ]}
+          onPress={() => {
+            if (isLoggedIn) {
+              router.push("/checkout");
+            } else {
+              router.push("/login");
+            }
+          }}>
+          <Text style={styles.proceedButtonText}>
+            {isLoggedIn ? "Proceed to Checkout" : "Login /Create Account"}
+          </Text>
         </Pressable>
       </View>
     </View>
@@ -107,8 +124,7 @@ const styles = StyleSheet.create({
   summaryContainer: {
     backgroundColor: "#fff",
     paddingHorizontal: 20,
-    paddingTop: 10,
-    paddingBottom: 110,
+    paddingVertical: 12,
     borderTopWidth: 1,
     borderTopColor: "#f0f0f0",
     gap: 4,
@@ -141,19 +157,19 @@ const styles = StyleSheet.create({
     fontFamily: theme.fonts.semibold,
     color: theme.colors.secondary,
   },
-  loginButton: {
+  proceedButton: {
     backgroundColor: theme.colors.primary,
     paddingVertical: 10,
     borderRadius: 30,
     alignItems: "center",
     justifyContent: "center",
   },
-  loginButtonText: {
+  proceedButtonText: {
     fontSize: 16,
     fontFamily: theme.fonts.semibold,
     color: "#fff",
   },
-  loginButtonPressed: {
+  proceedButtonPressed: {
     opacity: 0.8,
   },
 });

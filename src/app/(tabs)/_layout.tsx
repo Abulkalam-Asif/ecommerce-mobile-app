@@ -7,7 +7,17 @@ export default function TabsLayout() {
   return (
     <>
       <Tabs
-        tabBar={(props) => <CustomTabBar {...props} />}
+        tabBar={(props) => {
+          // Check if current route is cart
+          const currentRouteName = props.state.routes[props.state.index].name;
+
+          // Don't render tab bar on cart screen
+          if (currentRouteName === "cart") {
+            return null;
+          }
+
+          return <CustomTabBar {...props} />;
+        }}
         screenOptions={{
           headerShown: false,
         }}>
