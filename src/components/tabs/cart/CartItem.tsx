@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import { Image } from "expo-image";
 import { theme } from "@/src/constants/theme";
 import { FontAwesome6 } from "@expo/vector-icons";
+import { router } from "expo-router";
 
 type CartItemProps = {
   item: {
@@ -14,8 +15,8 @@ type CartItemProps = {
     quantity: number;
     discount?: string;
   };
-  onQuantityChange?: (id: number, newQuantity: number) => void;
-  onRemove?: (id: number) => void;
+  onQuantityChange: (id: number, newQuantity: number) => void;
+  onRemove: (id: number) => void;
 };
 
 const CartItem = ({ item, onQuantityChange, onRemove }: CartItemProps) => {
@@ -24,14 +25,14 @@ const CartItem = ({ item, onQuantityChange, onRemove }: CartItemProps) => {
   const handleIncrement = () => {
     const newQuantity = quantity + 1;
     setQuantity(newQuantity);
-    onQuantityChange?.(item.Id, newQuantity);
+    onQuantityChange(item.Id, newQuantity);
   };
 
   const handleDecrement = () => {
     if (quantity > 1) {
       const newQuantity = quantity - 1;
       setQuantity(newQuantity);
-      onQuantityChange?.(item.Id, newQuantity);
+      onQuantityChange(item.Id, newQuantity);
     }
   };
 
@@ -45,7 +46,12 @@ const CartItem = ({ item, onQuantityChange, onRemove }: CartItemProps) => {
   const discount = calculateDiscount();
 
   return (
-    <View style={styles.container}>
+    <Pressable
+      style={({ pressed }) => [
+        styles.itemCard,
+        pressed && styles.itemCardPressed,
+      ]}
+      onPress={() => router.push(`/product-details?id=${item.Id}`)}>
       {/* Product Image */}
       <View style={styles.imageContainer}>
         <Image
@@ -79,13 +85,12 @@ const CartItem = ({ item, onQuantityChange, onRemove }: CartItemProps) => {
             styles.quantityButton,
             pressed && styles.quantityButtonPressed,
           ]}
-          onPress={handleDecrement}
-          disabled={quantity <= 1}>
-          <FontAwesome6
-            name="minus"
-            size={14}
-            color={quantity <= 1 ? theme.colors.background : theme.colors.text}
-          />
+          onPress={quantity > 1 ? handleDecrement : () => onRemove(item.Id)}>
+          {quantity > 1 ? (
+            <FontAwesome6 name="minus" size={14} color={theme.colors.text} />
+          ) : (
+            <FontAwesome6 name="trash" size={14} color={theme.colors.text} />
+          )}
         </Pressable>
 
         <Text style={styles.quantityText}>{quantity}</Text>
@@ -99,26 +104,31 @@ const CartItem = ({ item, onQuantityChange, onRemove }: CartItemProps) => {
           <FontAwesome6 name="plus" size={14} color={theme.colors.text} />
         </Pressable>
       </View>
-    </View>
+    </Pressable>
   );
 };
 
 export default CartItem;
 
 const styles = StyleSheet.create({
-  container: {
+  itemCard: {
     flexDirection: "row",
     backgroundColor: "#fff",
-    paddingVertical: 16,
+    paddingVertical: 10,
     paddingHorizontal: 20,
     marginBottom: 1,
     alignItems: "center",
   },
+  itemCardPressed: {
+    backgroundColor: theme.colors.background_3,
+    opacity: 0.8,
+  },
   imageContainer: {
     width: 60,
     height: 60,
-    backgroundColor: "#f8f9fa",
     borderRadius: 8,
+    borderWidth: 1,
+    borderColor: theme.colors.background,
     justifyContent: "center",
     alignItems: "center",
     marginRight: 12,
@@ -142,7 +152,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     flexWrap: "wrap",
-    gap: 8,
+    columnGap: 10,
   },
   currentPriceText: {
     fontSize: 16,
