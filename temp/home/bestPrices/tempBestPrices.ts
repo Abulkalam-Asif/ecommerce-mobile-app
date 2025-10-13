@@ -22,4 +22,25 @@ export const tempBestPrices: IProduct[] = [
     Price: 3450,
     OldPrice: 4500,
   },
+  {
+    Id: 4,
+    Name: "Best Price 4",
+    MainImageUrl: require("@/temp/home/bestPrices/1.png"),
+    Price: 2400,
+    OldPrice: 2500,
+  },
+  {
+    Id: 5,
+    Name: "Best Price 5",
+    MainImageUrl: require("@/temp/home/bestPrices/2.png"),
+    Price: 0,
+    OldPrice: 3500,
+  },
+  {
+    Id: 6,
+    Name: "Best Price 6",
+    MainImageUrl: require("@/temp/home/bestPrices/3.png"),
+    Price: 3450,
+    OldPrice: 4500,
+  },
 ];

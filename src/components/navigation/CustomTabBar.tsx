@@ -78,10 +78,18 @@ const CustomTabBar: React.FC<BottomTabBarProps> = ({
     <View style={styles.container}>
       {/* Floating WhatsApp Button */}
       {state.routes.some((route) => route.name === "quick-order") && (
-        <Pressable style={styles.quickOrderButton} onPress={handleQuickOrder}>
+        <Pressable
+          style={({ pressed }) => [
+            styles.quickOrderButton,
+            pressed && { opacity: 0.8 },
+          ]}
+          onPress={handleQuickOrder}>
           <View style={styles.quickOrderIconContainer}>
             <MaterialCommunityIcons name="whatsapp" size={34} color="white" />
           </View>
+          <Text style={[styles.tabLabel, { color: theme.colors.primary }]}>
+            Quick Order
+          </Text>
         </Pressable>
       )}
 
@@ -181,7 +189,7 @@ const styles = StyleSheet.create({
     position: "absolute",
     top: -20,
     left: "50%",
-    marginLeft: -20,
+    marginLeft: -10,
     zIndex: 60,
   },
   quickOrderIconContainer: {

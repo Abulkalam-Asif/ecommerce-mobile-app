@@ -21,4 +21,14 @@ export const tempBanners: IBanner[] = [
     Title: "Achaar",
     PictureUrl: require("@/temp/home/banners/4.webp"),
   },
+  {
+    Id: 5,
+    Title: "Noodle & Sauces",
+    PictureUrl: require("@/temp/home/banners/3.webp"),
+  },
+  {
+    Id: 6,
+    Title: "Achaar",
+    PictureUrl: require("@/temp/home/banners/4.webp"),
+  },
 ];

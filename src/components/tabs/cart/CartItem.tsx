@@ -166,7 +166,7 @@ const styles = StyleSheet.create({
     fontFamily: theme.fonts.regular,
   },
   discountTag: {
-    backgroundColor: "#FBBE36",
+    backgroundColor: theme.colors.tag,
     fontSize: 8,
     lineHeight: 16,
     fontFamily: theme.fonts.semibold,

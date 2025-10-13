@@ -1,9 +1,10 @@
 import React from "react";
-import { ScrollView, StyleSheet, Text, View } from "react-native";
+import { Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 import GeneralTopBar from "@/src/components/general/GeneralTopBar";
 import { theme } from "@/src/constants/theme";
 import ExpectedDeliveryTimeSection from "@/src/components/checkout-payment/checkout/ExpectedDeliveryTimeSection";
-import PaymentMethodSelectionSection from "@/src/components/checkout-payment/checkout/PaymentMethodSelectionSection";
+import BillingDetailsSection from "@/src/components/checkout-payment/checkout/BillingDetailsSection";
+import { router } from "expo-router";
 
 export default function CheckoutScreen() {
   return (
@@ -17,8 +18,20 @@ export default function CheckoutScreen() {
           time
         </Text>
         <ExpectedDeliveryTimeSection />
-        <PaymentMethodSelectionSection />
+        <BillingDetailsSection />
       </ScrollView>
+      <View style={styles.proceedButtonContainer}>
+        <Pressable
+          style={({ pressed }) => [
+            styles.proceedButton,
+            pressed && styles.proceedButtonPressed,
+          ]}
+          onPress={() => {
+            router.push("/payments");
+          }}>
+          <Text style={styles.proceedButtonText}>Proceed to Payments</Text>
+        </Pressable>
+      </View>
     </View>
   );
 }
@@ -43,5 +56,30 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     paddingVertical: 10,
     borderRadius: 8,
+  },
+
+  proceedButtonContainer: {
+    paddingHorizontal: 20,
+    paddingVertical: 10,
+    borderTopColor: theme.colors.background,
+    borderTopWidth: 1,
+  },
+  proceedButton: {
+    backgroundColor: theme.colors.primary,
+    paddingVertical: 10,
+    borderRadius: 30,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  proceedButtonPressed: {
+    opacity: 0.8,
+  },
+  proceedButtonDisabled: {
+    backgroundColor: theme.colors.background,
+  },
+  proceedButtonText: {
+    fontSize: 16,
+    fontFamily: theme.fonts.semibold,
+    color: "#fff",
   },
 });

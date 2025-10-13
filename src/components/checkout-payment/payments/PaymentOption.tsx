@@ -93,7 +93,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     borderRadius: 8,
-    borderWidth: 2,
+    borderWidth: 1,
     borderColor: theme.colors.background,
     backgroundColor: "white",
     paddingVertical: 8,
@@ -103,7 +103,6 @@ const styles = StyleSheet.create({
   buttonSelected: {
     backgroundColor: theme.colors.primary_light,
     borderColor: theme.colors.primary,
-    // elevation: 4,
   },
   image: { width: 24, height: 24 },
   nameText: {

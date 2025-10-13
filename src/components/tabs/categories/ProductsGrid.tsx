@@ -1,15 +1,21 @@
-import { FlatList, StyleSheet, View } from "react-native";
+import { Dimensions, FlatList, StyleSheet, View } from "react-native";
 import React from "react";
 import { IProduct } from "@/src/types";
 import ProductCard from "@/src/components/tabs/home/ProductCard";
 
-type Props = {
+type ProductsGridProps = {
   products: IProduct[];
   selectedSort?: string;
   selectedBrands?: number[];
 };
 
-const ProductsGrid = ({ products, selectedSort, selectedBrands }: Props) => {
+const { width } = Dimensions.get("window");
+
+const ProductsGrid = ({
+  products,
+  selectedSort,
+  selectedBrands,
+}: ProductsGridProps) => {
   // Filter products based on selected brands (for future API integration)
   const filteredProducts = React.useMemo(() => {
     let filtered = [...products];
@@ -47,7 +53,10 @@ const ProductsGrid = ({ products, selectedSort, selectedBrands }: Props) => {
   }, [filteredProducts, selectedSort]);
 
   const renderProduct = ({ item }: { item: IProduct }) => (
-    <ProductCard product={item} cardWidth={"48%"} />
+    <ProductCard
+      product={item}
+      cardWidth={width > 500 ? (width - 64) / 3 : (width - 48) / 2}
+    />
   );
 
   return (
@@ -56,7 +65,7 @@ const ProductsGrid = ({ products, selectedSort, selectedBrands }: Props) => {
         data={sortedProducts}
         renderItem={renderProduct}
         keyExtractor={(item) => item.Id.toString()}
-        numColumns={2}
+        numColumns={width > 500 ? 3 : 2}
         columnWrapperStyle={styles.row}
         contentContainerStyle={styles.listContent}
         showsVerticalScrollIndicator={false}
