@@ -194,7 +194,6 @@ const styles = StyleSheet.create({
   },
   productNameText: {
     fontSize: 18,
-    lineHeight: 24,
     color: theme.colors.text,
     fontFamily: theme.fonts.semibold,
     flex: 1,

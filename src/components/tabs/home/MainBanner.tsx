@@ -41,7 +41,7 @@ const MainBanner = () => {
           {/* Banner Image */}
           <Pressable onPress={handleBannerPress} style={styles.imageContainer}>
             <Image
-              source={{ uri: mainBanner.PictureUrl }}
+              source={mainBanner.PictureUrl}
               style={styles.bannerImage}
               contentFit="cover"
             />

@@ -2,12 +2,12 @@ import {
   StyleSheet,
   Text,
   View,
-  Image,
   TouchableOpacity,
   Pressable,
 } from "react-native";
 import React from "react";
 import * as ImagePicker from "expo-image-picker";
+import { Image } from "expo-image";
 import { Checkbox } from "expo-checkbox";
 import { theme } from "@/src/constants/theme";
 
@@ -57,7 +57,7 @@ const UploadScreenshot = ({
       </Pressable>
 
       {screenshot ? (
-        <Image source={{ uri: screenshot }} style={styles.image} />
+        <Image source={screenshot} style={styles.image} contentFit="contain" />
       ) : (
         <View style={styles.placeholder}>
           <Text style={styles.placeholderText}>No screenshot uploaded</Text>
@@ -96,7 +96,6 @@ const styles = StyleSheet.create({
     width: "50%",
     minWidth: 200,
     height: 200,
-    resizeMode: "contain",
     borderRadius: 8,
   },
   placeholder: {

@@ -189,7 +189,7 @@ const styles = StyleSheet.create({
     position: "absolute",
     top: -20,
     left: "50%",
-    marginLeft: -10,
+    marginLeft: -14,
     zIndex: 60,
   },
   quickOrderIconContainer: {

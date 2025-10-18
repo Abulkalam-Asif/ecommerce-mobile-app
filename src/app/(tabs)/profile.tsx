@@ -1,16 +1,36 @@
-import { StyleSheet, Text, View } from "react-native";
+import { ScrollView, StyleSheet, Text } from "react-native";
 import React from "react";
+import { theme } from "@/src/constants/theme";
+import ProfileTopSection from "@/src/components/tabs/profile/ProfileTopSection";
+import AccountSettingsSection from "@/src/components/tabs/profile/AccountSettingsSection";
 
-type Props = {};
-
-const ProfileScreen = (props: Props) => {
+const ProfileScreen = () => {
   return (
-    <View>
-      <Text>Profile</Text>
-    </View>
+    <ScrollView
+      style={styles.container}
+      contentContainerStyle={styles.containerContent}>
+      <Text style={styles.myProfileText}>My Profile</Text>
+      <ProfileTopSection />
+      <AccountSettingsSection />
+    </ScrollView>
   );
 };
 
 export default ProfileScreen;
 
-const styles = StyleSheet.create({});
+const styles = StyleSheet.create({
+  container: {
+    backgroundColor: "#fff",
+    flex: 1,
+  },
+  containerContent: {
+    paddingBottom: 70,
+  },
+  myProfileText: {
+    fontFamily: theme.fonts.semibold,
+    fontSize: 22,
+    flex: 1,
+    textAlign: "center",
+    marginTop: 20,
+  },
+});

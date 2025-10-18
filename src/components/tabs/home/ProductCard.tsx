@@ -5,6 +5,7 @@ import { theme } from "@/src/constants/theme";
 import { FontAwesome6 } from "@expo/vector-icons";
 import { router } from "expo-router";
 import { IProduct } from "@/src/types";
+import { useSinglePress } from "@/src/hooks/useSinglePress";
 
 type Props = {
   product: IProduct;
@@ -13,8 +14,11 @@ type Props = {
 
 const ProductCard = ({ product, cardWidth = 180 }: Props) => {
   const [quantityInCart, setQuantityInCart] = useState(0);
+  const canPress = useSinglePress();
 
   const handleProductPress = () => {
+    if (!canPress()) return;
+
     router.push({
       pathname: "/product-details",
       params: { id: String(product.Id) },

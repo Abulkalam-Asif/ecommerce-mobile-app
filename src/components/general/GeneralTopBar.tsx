@@ -14,7 +14,7 @@ const GeneralTopBar = ({ text }: { text: string }) => {
           router.back();
         }}
       />
-      <Text style={styles.reviewsText}>{text}</Text>
+      <Text style={styles.text}>{text}</Text>
     </View>
   );
 };
@@ -31,7 +31,7 @@ const styles = StyleSheet.create({
     elevation: 2,
     paddingHorizontal: 16,
   },
-  reviewsText: {
+  text: {
     fontFamily: theme.fonts.semibold,
     fontSize: 22,
     flex: 1,

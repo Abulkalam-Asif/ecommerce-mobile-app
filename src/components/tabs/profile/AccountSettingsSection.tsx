@@ -1,0 +1,48 @@
+import { StyleSheet, Text, View } from "react-native";
+import React from "react";
+import { theme } from "@/src/constants/theme";
+import AccountSettingsButton from "./AccountSettingsButton";
+
+const AccountSettingsSection = () => {
+  return (
+    <View style={styles.container}>
+      <Text style={styles.accountSettingText}>Account Settings</Text>
+      <View style={styles.buttonsContainer}>
+        <AccountSettingsButton
+          text="Orders"
+          href="/orders"
+          imageSrc={require("@/src/assets/icons/profile/orders.png")}
+        />
+        <AccountSettingsButton
+          text="Settings"
+          href="/settings"
+          imageSrc={require("@/src/assets/icons/profile/settings.png")}
+        />
+        <AccountSettingsButton
+          text="My Favorites"
+          href="/my-favorites"
+          imageSrc={require("@/src/assets/icons/profile/my-favourites.png")}
+        />
+      </View>
+    </View>
+  );
+};
+
+export default AccountSettingsSection;
+
+const styles = StyleSheet.create({
+  container: {
+    paddingHorizontal: 20,
+    marginTop: 20,
+  },
+  accountSettingText: {
+    fontSize: 14,
+    fontFamily: theme.fonts.semibold,
+    color: theme.colors.text,
+    marginBottom: 10,
+  },
+  buttonsContainer: {
+    flexDirection: "column",
+    gap: 10,
+  },
+});
