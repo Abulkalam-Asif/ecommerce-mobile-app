@@ -9,14 +9,20 @@ import Animated, {
   interpolate,
 } from "react-native-reanimated";
 import { theme } from "@/src/constants/theme";
+import UploadScreenshot from "./UploadScreenshot";
 
-type Props = {
+type PaymentOptionProps = {
   name: string;
   image: string;
   selectedMethod: string;
   onSelect: (method: string) => void;
   children?: React.ReactNode;
   contentHeight?: number;
+  screenshotRequired: boolean;
+  isChecked: boolean;
+  setChecked: (checked: boolean) => void;
+  screenshot: string | null;
+  setScreenshot: (screenshot: string | null) => void;
 };
 
 const PaymentOption = ({
@@ -26,7 +32,12 @@ const PaymentOption = ({
   onSelect,
   children,
   contentHeight = 100,
-}: Props) => {
+  screenshotRequired,
+  isChecked,
+  setChecked,
+  screenshot,
+  setScreenshot,
+}: PaymentOptionProps) => {
   const isSelected = selectedMethod === name;
   const hasChildren = !!children;
 
@@ -68,7 +79,13 @@ const PaymentOption = ({
     <View>
       <Pressable
         style={[styles.button, isSelected && styles.buttonSelected]}
-        onPress={() => onSelect(name)}>
+        onPress={() => {
+          if (!isSelected) {
+            onSelect(name);
+          } else {
+            onSelect("");
+          }
+        }}>
         <Image source={image} style={styles.image} />
         <Text style={styles.nameText}>{name}</Text>
         {hasChildren && (
@@ -80,6 +97,14 @@ const PaymentOption = ({
       {hasChildren && (
         <Animated.View style={[styles.childrenContainer, contentAnimatedStyle]}>
           {children}
+          {screenshotRequired && selectedMethod === name && (
+            <UploadScreenshot
+              isChecked={isChecked}
+              setChecked={setChecked}
+              screenshot={screenshot}
+              setScreenshot={setScreenshot}
+            />
+          )}
         </Animated.View>
       )}
     </View>

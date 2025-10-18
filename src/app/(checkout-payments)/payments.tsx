@@ -3,21 +3,21 @@ import { Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 import GeneralTopBar from "@/src/components/general/GeneralTopBar";
 import { theme } from "@/src/constants/theme";
 import PaymentOption from "@/src/components/checkout-payment/payments/PaymentOption";
-import UploadScreenshot from "@/src/components/checkout-payment/payments/UploadScreenshot";
 
 export default function PaymentsScreen() {
-  const [selectedMethod, setSelectedMethod] =
-    useState<string>("Cash on Delivery");
+  const [selectedMethod, setSelectedMethod] = useState<string>("");
 
   const [isChecked, setChecked] = useState(false);
   const [screenshot, setScreenshot] = useState<string | null>(null);
 
   const isProceedDisabled =
-    selectedMethod !== "Cash on Delivery" && (!isChecked || !screenshot);
+    !selectedMethod ||
+    (selectedMethod !== "Cash on Delivery" && (!isChecked || !screenshot));
 
   return (
     <View style={styles.mainContainer}>
       <GeneralTopBar text="Payments" />
+
       <ScrollView
         style={styles.container}
         contentContainerStyle={styles.contentContainer}>
@@ -27,13 +27,24 @@ export default function PaymentsScreen() {
           image={require("@/src/assets/icons/payments/cod.png")}
           onSelect={(method: string) => setSelectedMethod(method)}
           selectedMethod={selectedMethod}
+          contentHeight={0}
+          screenshotRequired={false}
+          isChecked={isChecked}
+          setChecked={setChecked}
+          screenshot={screenshot}
+          setScreenshot={setScreenshot}
         />
         <PaymentOption
           name="JazzCash"
           image={require("@/src/assets/icons/payments/jazzcash.png")}
           onSelect={(method: string) => setSelectedMethod(method)}
           selectedMethod={selectedMethod}
-          contentHeight={48}>
+          contentHeight={400}
+          screenshotRequired={true}
+          isChecked={isChecked}
+          setChecked={setChecked}
+          screenshot={screenshot}
+          setScreenshot={setScreenshot}>
           <Text style={styles.accountText}>Account Number: 123456789</Text>
           <Text style={styles.accountText}>Account Title: John Doe</Text>
         </PaymentOption>
@@ -42,7 +53,12 @@ export default function PaymentsScreen() {
           image={require("@/src/assets/icons/payments/easypaisa.png")}
           onSelect={(method: string) => setSelectedMethod(method)}
           selectedMethod={selectedMethod}
-          contentHeight={48}>
+          contentHeight={400}
+          screenshotRequired={true}
+          isChecked={isChecked}
+          setChecked={setChecked}
+          screenshot={screenshot}
+          setScreenshot={setScreenshot}>
           <Text style={styles.accountText}>Account Number: 123456789</Text>
           <Text style={styles.accountText}>Account Title: John Doe</Text>
         </PaymentOption>
@@ -51,20 +67,18 @@ export default function PaymentsScreen() {
           image={require("@/src/assets/icons/payments/bank.png")}
           onSelect={(method: string) => setSelectedMethod(method)}
           selectedMethod={selectedMethod}
-          contentHeight={72}>
+          contentHeight={430}
+          screenshotRequired={true}
+          isChecked={isChecked}
+          setChecked={setChecked}
+          screenshot={screenshot}
+          setScreenshot={setScreenshot}>
           <Text style={styles.accountText}>Meezan Bank</Text>
           <Text style={styles.accountText}>Account Number: 123456789</Text>
           <Text style={styles.accountText}>Account Title: John Doe</Text>
         </PaymentOption>
-        {selectedMethod !== "Cash on Delivery" && (
-          <UploadScreenshot
-            isChecked={isChecked}
-            setChecked={setChecked}
-            screenshot={screenshot}
-            setScreenshot={setScreenshot}
-          />
-        )}
       </ScrollView>
+
       <View style={styles.proceedButtonContainer}>
         <Pressable
           style={({ pressed }) => [
