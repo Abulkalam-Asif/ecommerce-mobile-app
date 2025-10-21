@@ -1,4 +1,11 @@
-import { Pressable, ScrollView, StyleSheet, Text, View, Alert } from "react-native";
+import {
+  Pressable,
+  ScrollView,
+  StyleSheet,
+  Text,
+  View,
+  Alert,
+} from "react-native";
 import React, { useRef, useState } from "react";
 import { theme } from "@/src/constants/theme";
 import GeneralTopBar from "@/src/components/general/GeneralTopBar";
@@ -76,9 +83,9 @@ const OrderDetailsContent = ({
 
   const handleDownloadOrderSummary = async () => {
     try {
-      // Request permission to save to gallery
-      const { status } = await MediaLibrary.requestPermissionsAsync();
-      
+      // Request permission to save to gallery (write-only permission)
+      const { status } = await MediaLibrary.requestPermissionsAsync(false);
+
       if (status !== "granted") {
         Alert.alert(
           "Permission Required",
@@ -97,22 +104,21 @@ const OrderDetailsContent = ({
       // Capture the view as an image
       if (viewShotRef.current && viewShotRef.current.capture) {
         const uri = await viewShotRef.current.capture();
-        
+
         // Save to gallery
         const asset = await MediaLibrary.createAssetAsync(uri);
-        await MediaLibrary.createAlbumAsync("Orders", asset, false);
-        
-        Alert.alert(
-          "Success",
-          "Order summary has been saved to your gallery!"
-        );
+
+        try {
+          await MediaLibrary.createAlbumAsync("Orders", asset, false);
+        } catch {
+          // Album might already exist, that's okay
+        }
+
+        Alert.alert("Success", "Order summary has been saved to your gallery!");
       }
     } catch (error) {
       console.error("Error saving order summary:", error);
-      Alert.alert(
-        "Error",
-        "Failed to save order summary. Please try again."
-      );
+      Alert.alert("Error", "Failed to save order summary. Please try again.");
     }
   };
 
@@ -124,128 +130,135 @@ const OrderDetailsContent = ({
         contentContainerStyle={styles.contentContainer}>
         <ViewShot ref={viewShotRef} options={{ format: "jpg", quality: 0.9 }}>
           {/* Order Details Section */}
-        <View style={styles.section}>
-          <Text style={styles.sectionTitleText}>Order details</Text>
-          <View style={styles.orderDetailsCard}>
-            <View style={styles.orderDetailsLeft}>
-              <Text style={styles.orderStatusText}>
-                Order is{" "}
-                <Text style={[styles.statusText, { color: getStatusColor() }]}>
-                  {getStatusText()}
+          <View style={styles.section}>
+            <Text style={styles.sectionTitleText}>Order details</Text>
+            <View style={styles.orderDetailsCard}>
+              <View style={styles.orderDetailsLeft}>
+                <Text style={styles.orderStatusText}>
+                  Order is{" "}
+                  <Text
+                    style={[styles.statusText, { color: getStatusColor() }]}>
+                    {getStatusText()}
+                  </Text>
+                  {orderData?.status === "in-process" && " and will deliver on"}
                 </Text>
-                {orderData?.status === "in-process" && " and will deliver on"}
-              </Text>
-              <Text style={styles.deliveryTimeText}>
-                Friday 26th September 10:00 am
-              </Text>
-            </View>
-            <Image
-              source={require("@/src/assets/rider.png")}
-              style={styles.riderImage}
-            />
-          </View>
-        </View>
-
-        {/* Delivery Address Section */}
-        <View style={styles.section}>
-          <Text style={styles.sectionTitleText}>Delivery Address</Text>
-          <View style={styles.addressCard}>
-            <MaterialCommunityIcons
-              name="map-marker-outline"
-              size={20}
-              color={theme.colors.text_secondary}
-            />
-            <Text style={styles.addressText}>
-              House 360, PU Main Rd, Quaid-i-Azam Campus, Lahore, Pakistan
-            </Text>
-          </View>
-        </View>
-
-        {/* Payment Details Section */}
-        <View style={styles.section}>
-          <Text style={styles.sectionTitleText}>Payment details</Text>
-          <View style={styles.paymentCard}>
-            <View style={styles.paymentRow}>
-              <Text style={styles.totalAmountText}>Total Amount</Text>
-              <Text style={styles.paymentAmountText}>Rs. {totalAmount}</Text>
-            </View>
-            <View style={styles.paymentRow}>
-              <View style={styles.paymentMethodRow}>
-                <Image
-                  source={paymentMethodImage()}
-                  style={styles.paymentMethodImage}
-                />
-                <Text style={styles.paymentLabelText}>Payment Method</Text>
+                <Text style={styles.deliveryTimeText}>
+                  Friday 26th September 10:00 am
+                </Text>
               </View>
-              <Text style={styles.paymentMethodText}>Cash on Delivery</Text>
-            </View>
-          </View>
-        </View>
-
-        {/* Billing Details Section */}
-        <View style={styles.section}>
-          <View style={styles.billingHeader}>
-            <Text style={styles.sectionTitleText}>Billing Details</Text>
-            <Pressable style={styles.downloadButton} onPress={handleDownloadOrderSummary}>
-              <Feather name="download" size={20} color={theme.colors.text} />
-            </Pressable>
-            <Pressable
-              style={styles.expandButton}
-              onPress={() =>
-                setIsBillingDetailsExpanded(!isBillingDetailsExpanded)
-              }>
-              <FontAwesome6
-                name={isBillingDetailsExpanded ? "chevron-up" : "chevron-down"}
-                size={16}
-                color={theme.colors.text}
+              <Image
+                source={require("@/src/assets/rider.png")}
+                style={styles.riderImage}
               />
-            </Pressable>
+            </View>
           </View>
 
-          {isBillingDetailsExpanded && (
-            <View style={styles.billingCard}>
-              <View style={styles.billingRow}>
-                <View style={styles.leftSection}>
-                  <Text style={styles.billingLabelText}>Subtotal</Text>
-                  {savings > 0 && (
-                    <View style={styles.savingsTag}>
-                      <Text style={styles.savingsText}>Saved Rs.{savings}</Text>
-                    </View>
-                  )}
+          {/* Delivery Address Section */}
+          <View style={styles.section}>
+            <Text style={styles.sectionTitleText}>Delivery Address</Text>
+            <View style={styles.addressCard}>
+              <MaterialCommunityIcons
+                name="map-marker-outline"
+                size={20}
+                color={theme.colors.text_secondary}
+              />
+              <Text style={styles.addressText}>
+                House 360, PU Main Rd, Quaid-i-Azam Campus, Lahore, Pakistan
+              </Text>
+            </View>
+          </View>
+
+          {/* Payment Details Section */}
+          <View style={styles.section}>
+            <Text style={styles.sectionTitleText}>Payment details</Text>
+            <View style={styles.paymentCard}>
+              <View style={styles.paymentRow}>
+                <Text style={styles.totalAmountText}>Total Amount</Text>
+                <Text style={styles.paymentAmountText}>Rs. {totalAmount}</Text>
+              </View>
+              <View style={styles.paymentRow}>
+                <View style={styles.paymentMethodRow}>
+                  <Image
+                    source={paymentMethodImage()}
+                    style={styles.paymentMethodImage}
+                  />
+                  <Text style={styles.paymentLabelText}>Payment Method</Text>
                 </View>
-                <Text style={styles.billingAmountText}>Rs. {subtotal}</Text>
+                <Text style={styles.paymentMethodText}>Cash on Delivery</Text>
               </View>
+            </View>
+          </View>
 
-              <View style={styles.billingRow}>
-                <Text style={styles.billingLabelText}>Service Fee</Text>
-                <Text style={styles.billingAmountText}>Rs. {serviceFee}</Text>
-              </View>
+          {/* Billing Details Section */}
+          <View style={styles.section}>
+            <View style={styles.billingHeader}>
+              <Text style={styles.sectionTitleText}>Billing Details</Text>
+              <Pressable
+                style={styles.downloadButton}
+                onPress={handleDownloadOrderSummary}>
+                <Feather name="download" size={20} color={theme.colors.text} />
+              </Pressable>
+              <Pressable
+                style={styles.expandButton}
+                onPress={() =>
+                  setIsBillingDetailsExpanded(!isBillingDetailsExpanded)
+                }>
+                <FontAwesome6
+                  name={
+                    isBillingDetailsExpanded ? "chevron-up" : "chevron-down"
+                  }
+                  size={16}
+                  color={theme.colors.text}
+                />
+              </Pressable>
+            </View>
 
-              <View style={styles.billingRow}>
-                <View style={styles.leftSection}>
-                  <Text style={styles.billingLabelText}>Delivery Fee</Text>
-                  <View style={styles.freeDeliveryTag}>
-                    <Text style={styles.freeDeliveryText}>Free Delivery</Text>
+            {isBillingDetailsExpanded && (
+              <View style={styles.billingCard}>
+                <View style={styles.billingRow}>
+                  <View style={styles.leftSection}>
+                    <Text style={styles.billingLabelText}>Subtotal</Text>
+                    {savings > 0 && (
+                      <View style={styles.savingsTag}>
+                        <Text style={styles.savingsText}>
+                          Saved Rs.{savings}
+                        </Text>
+                      </View>
+                    )}
+                  </View>
+                  <Text style={styles.billingAmountText}>Rs. {subtotal}</Text>
+                </View>
+
+                <View style={styles.billingRow}>
+                  <Text style={styles.billingLabelText}>Service Fee</Text>
+                  <Text style={styles.billingAmountText}>Rs. {serviceFee}</Text>
+                </View>
+
+                <View style={styles.billingRow}>
+                  <View style={styles.leftSection}>
+                    <Text style={styles.billingLabelText}>Delivery Fee</Text>
+                    <View style={styles.freeDeliveryTag}>
+                      <Text style={styles.freeDeliveryText}>Free Delivery</Text>
+                    </View>
+                  </View>
+                  <View style={styles.rightSection}>
+                    {originalDeliveryFee > 0 && (
+                      <Text style={styles.strikethroughPrice}>
+                        Rs. {originalDeliveryFee}
+                      </Text>
+                    )}
                   </View>
                 </View>
-                <View style={styles.rightSection}>
-                  {originalDeliveryFee > 0 && (
-                    <Text style={styles.strikethroughPrice}>
-                      Rs. {originalDeliveryFee}
-                    </Text>
-                  )}
+
+                <View style={styles.separator} />
+
+                <View style={styles.totalRow}>
+                  <Text style={styles.totalAmountText}>Total Amount</Text>
+                  <Text style={styles.totalAmountText}>Rs. {totalAmount}</Text>
                 </View>
               </View>
-
-              <View style={styles.separator} />
-
-              <View style={styles.totalRow}>
-                <Text style={styles.totalAmountText}>Total Amount</Text>
-                <Text style={styles.totalAmountText}>Rs. {totalAmount}</Text>
-              </View>
-            </View>
-          )}
-        </View>
+            )}
+          </View>
         </ViewShot>
       </ScrollView>
 
