@@ -24,7 +24,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   containerContent: {
-    paddingBottom: 70,
+    paddingBottom: 100,
   },
   myProfileText: {
     fontFamily: theme.fonts.semibold,

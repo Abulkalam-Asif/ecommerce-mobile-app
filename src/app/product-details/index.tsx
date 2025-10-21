@@ -1,6 +1,6 @@
 import React from "react";
-import ProductContent from "@/src/components/product-details/ProductContent";
 import { tempProductDetails } from "@/temp/home/product-details/tempProductDetails";
+import ProductDetailsContent from "@/src/components/product-details/ProductDetailsContent";
 
 export default function ProductDetailsScreen() {
   // const { id } = useLocalSearchParams<{ id: string }>();
@@ -9,7 +9,7 @@ export default function ProductDetailsScreen() {
   const product = tempProductDetails;
 
   return (
-    <ProductContent
+    <ProductDetailsContent
       product={product}
       // isLoading={isLoading}
       isLoading={false}

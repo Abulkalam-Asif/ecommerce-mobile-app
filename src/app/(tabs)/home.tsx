@@ -80,6 +80,6 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   containerContent: {
-    paddingBottom: 70,
+    paddingBottom: 100,
   },
 });

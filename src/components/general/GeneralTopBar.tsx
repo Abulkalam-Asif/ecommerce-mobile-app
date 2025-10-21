@@ -28,7 +28,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
     paddingVertical: 8,
     backgroundColor: "#fff",
-    elevation: 2,
     paddingHorizontal: 16,
   },
   text: {

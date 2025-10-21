@@ -10,17 +10,17 @@ const AccountSettingsSection = () => {
       <View style={styles.buttonsContainer}>
         <AccountSettingsButton
           text="Orders"
-          href="/orders"
+          href="/profile/orders"
           imageSrc={require("@/src/assets/icons/profile/orders.png")}
         />
         <AccountSettingsButton
           text="Settings"
-          href="/settings"
+          href="/profile/settings"
           imageSrc={require("@/src/assets/icons/profile/settings.png")}
         />
         <AccountSettingsButton
           text="My Favorites"
-          href="/my-favorites"
+          href="/profile/my-favourites"
           imageSrc={require("@/src/assets/icons/profile/my-favourites.png")}
         />
       </View>

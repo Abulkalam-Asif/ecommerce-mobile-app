@@ -10,12 +10,12 @@ import { Entypo, FontAwesome6 } from "@expo/vector-icons";
 import ProductsSection from "./ProductsSection";
 import { router } from "expo-router";
 
-type ProductContentProps = {
+type ProductDetailsContentProps = {
   product: IProductDetails | undefined;
   isLoading: boolean;
 };
 
-const ProductContent = ({ product, isLoading }: ProductContentProps) => {
+const ProductDetailsContent = ({ product, isLoading }: ProductDetailsContentProps) => {
   const [quantityInCart, setQuantityInCart] = useState(0);
   const [isShowMoreDescription, setIsShowMoreDescription] = useState(false);
   const [productsDisplayType, setProductsDisplayType] = useState<
@@ -172,7 +172,7 @@ const ProductContent = ({ product, isLoading }: ProductContentProps) => {
   );
 };
 
-export default ProductContent;
+export default ProductDetailsContent;
 
 const styles = StyleSheet.create({
   container: {

@@ -18,7 +18,7 @@ const HomeSearchSection: React.FC<HomeSearchSectionProps> = ({
         <FontAwesome6 name="bars" size={20} color={"#fff"} />
       </Pressable>
       <TextInput
-        placeholder="Search the store"
+        placeholder="Search your product"
         style={styles.textInput}
         placeholderTextColor={theme.colors.placeholder}
       />

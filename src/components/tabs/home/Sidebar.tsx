@@ -20,6 +20,7 @@ const sidebarLinks = [
   { title: "Help", href: "/help" },
   { title: "FAQs", href: "/faqs" },
   { title: "Returns & Refunds", href: "/returns-refunds" },
+  { title: "Share My App", href: "/share-my-app" },
 ];
 
 const Sidebar = ({ isOpen, closeSidebarHandler }: SidebarProps) => {

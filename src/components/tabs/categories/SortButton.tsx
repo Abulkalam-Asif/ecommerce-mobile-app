@@ -36,5 +36,7 @@ const styles = StyleSheet.create({
   },
   icon: {
     transform: [{ rotate: "90deg" }],
+    width: 20,
+    height: 20,
   },
 });

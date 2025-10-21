@@ -10,6 +10,13 @@ export const theme = {
     background: "#E0E0E0",
     background_2: "#FFF1D3",
     background_3: "#f8f7f7ff",
+
+    success: "#537D2B",
+    success_light: "#EAFCD9",
+    warning: "#CB8404",
+    warning_light: "#FAE4B4",
+    error: "#D74443",
+    error_light: "#F7D3D4",
   },
   light_colors: [
     "#FFE8B4",
