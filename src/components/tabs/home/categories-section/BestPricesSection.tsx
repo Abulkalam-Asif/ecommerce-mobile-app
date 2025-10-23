@@ -82,7 +82,6 @@ const styles = StyleSheet.create({
     gap: 12,
     position: "relative",
     overflow: "hidden",
-    elevation: 4,
   },
   discountPercentageText: {
     fontSize: 12,
@@ -90,7 +89,7 @@ const styles = StyleSheet.create({
     position: "absolute",
     top: 12,
     left: -25,
-    transform: [{ rotate: "-45deg" }],
+    transform: [{ rotate: "-0.785398rad" }], // -45 degrees in radians
     backgroundColor: theme.colors.primary,
     color: "#fff",
     paddingVertical: 2,

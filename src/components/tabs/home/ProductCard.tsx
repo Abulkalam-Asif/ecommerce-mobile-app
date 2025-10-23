@@ -99,7 +99,6 @@ const styles = StyleSheet.create({
     borderRadius: 16,
     padding: 10,
     position: "relative",
-    elevation: 4,
     backgroundColor: theme.colors.background_3,
   },
   discountText: {
@@ -119,12 +118,12 @@ const styles = StyleSheet.create({
     alignItems: "center",
     position: "relative",
     borderRadius: 14,
-    paddingTop: 30,
+    paddingTop: 24,
     paddingBottom: 16,
   },
   image: {
-    width: 60,
-    height: 60,
+    width: 80,
+    height: 80,
     objectFit: "contain",
   },
   nameText: {

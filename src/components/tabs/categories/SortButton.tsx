@@ -35,7 +35,7 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(0, 0, 0, 0.05)",
   },
   icon: {
-    transform: [{ rotate: "90deg" }],
+    transform: [{ rotate: "1.5708rad" }], // 90 degrees in radians
     width: 20,
     height: 20,
   },

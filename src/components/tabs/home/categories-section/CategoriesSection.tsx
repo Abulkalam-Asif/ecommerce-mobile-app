@@ -16,7 +16,7 @@ const CategoriesSection = ({
   if (loadingCategories) {
     return (
       <View style={styles.container}>
-        <Text style={styles.sectionTitleText}>Our Best Prices</Text>
+        <Text style={styles.sectionTitleText}>Categories</Text>
         {Array.from({ length: 2 }).map((_, index) => (
           <View key={index} style={styles.scrollContent}>
             {Array.from({ length: 3 }).map((_, idx) => (
@@ -85,7 +85,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    marginBottom: 12,
+    marginBottom: 16,
     paddingHorizontal: 20,
   },
   sectionTitleText: {
@@ -101,10 +101,10 @@ const styles = StyleSheet.create({
   scrollContent: {
     paddingHorizontal: 20,
     flexDirection: "row",
-    gap: 20,
+    gap: 24,
   },
   column: {
     flexDirection: "column",
-    gap: 20,
+    gap: 16,
   },
 });
