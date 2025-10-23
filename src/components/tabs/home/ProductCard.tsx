@@ -12,7 +12,7 @@ type Props = {
   cardWidth?: number | `${number}%`;
 };
 
-const ProductCard = ({ product, cardWidth = 180 }: Props) => {
+const ProductCard = ({ product, cardWidth = 150 }: Props) => {
   const [quantityInCart, setQuantityInCart] = useState(0);
   const canPress = useSinglePress();
 
@@ -104,8 +104,8 @@ const styles = StyleSheet.create({
   },
   discountText: {
     position: "absolute",
-    top: 10,
-    right: 10,
+    top: 8,
+    right: 8,
     backgroundColor: theme.colors.background,
     borderRadius: 20,
     paddingHorizontal: 10,
@@ -119,7 +119,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     position: "relative",
     borderRadius: 14,
-    paddingVertical: 30,
+    paddingVertical: 24,
   },
   image: {
     width: 80,

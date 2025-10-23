@@ -40,9 +40,9 @@ const styles = StyleSheet.create({
   card: {
     alignItems: "center",
     justifyContent: "flex-start",
-    gap: 8,
-    width: 90,
-    height: 120,
+    gap: 10,
+    width: 80,
+    height: 100,
   },
   cardPressed: {
     opacity: 0.7,
@@ -55,8 +55,8 @@ const styles = StyleSheet.create({
     elevation: 4,
   },
   image: {
-    width: 48,
-    height: 48,
+    width: 36,
+    height: 36,
     objectFit: "contain",
   },
   imageLoading: {

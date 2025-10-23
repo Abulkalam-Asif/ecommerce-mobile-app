@@ -1,4 +1,4 @@
-import { Pressable, StyleSheet, Text } from "react-native";
+import { Pressable, Share, StyleSheet, Text } from "react-native";
 import React, { useEffect } from "react";
 import Animated, {
   useSharedValue,
@@ -8,24 +8,40 @@ import Animated, {
 } from "react-native-reanimated";
 import { theme } from "@/src/constants/theme";
 import { AntDesign, FontAwesome6 } from "@expo/vector-icons";
+import { router } from "expo-router";
 
 type SidebarProps = {
   isOpen: boolean;
   closeSidebarHandler: () => void;
 };
-const sidebarLinks = [
-  { title: "About Us", href: "/about-us" },
-  { title: "Privacy Policy", href: "/privacy-policy" },
-  { title: "Terms & Conditions", href: "/terms-conditions" },
-  { title: "Help", href: "/help" },
-  { title: "FAQs", href: "/faqs" },
-  { title: "Returns & Refunds", href: "/returns-refunds" },
-  { title: "Share My App", href: "/share-my-app" },
-];
 
 const Sidebar = ({ isOpen, closeSidebarHandler }: SidebarProps) => {
   const translateX = useSharedValue(-300);
   const overlayOpacity = useSharedValue(0);
+
+  const sidebarLinks = [
+    { title: "About Us", onPress: () => router.push("/") },
+    { title: "Privacy Policy", onPress: () => router.push("/") },
+    {
+      title: "Terms & Conditions",
+      onPress: () => router.push("/"),
+    },
+    { title: "Help", onPress: () => router.push("/") },
+    { title: "FAQs", onPress: () => router.push("/") },
+    {
+      title: "Returns & Refunds",
+      onPress: () => router.push("/"),
+    },
+    {
+      title: "Share My App",
+      onPress: () => {
+        Share.share({
+          title: "Apna Store",
+          message: "Check out this awesome app: [App Link Here]",
+        });
+      },
+    },
+  ];
 
   useEffect(() => {
     if (isOpen) {
@@ -69,8 +85,11 @@ const Sidebar = ({ isOpen, closeSidebarHandler }: SidebarProps) => {
         </Pressable>
         {sidebarLinks.map((link) => (
           <Pressable
-            key={link.href}
-            onPress={closeSidebarHandler}
+            key={link.title}
+            onPress={() => {
+              link.onPress();
+              closeSidebarHandler();
+            }}
             style={({ pressed }) => [
               styles.link,
               pressed && styles.linkPressed,

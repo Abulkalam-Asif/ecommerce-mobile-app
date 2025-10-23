@@ -65,11 +65,7 @@ const CategoriesSection = ({
                 key={category.Id}
                 imageSource={category.PictureUrl}
                 name={category.Name}
-                backgroundColor={
-                  theme.light_colors[
-                    Math.floor(Math.random() * theme.light_colors.length)
-                  ]
-                }
+                backgroundColor={theme.colors.background_2}
               />
             ))}
           </View>

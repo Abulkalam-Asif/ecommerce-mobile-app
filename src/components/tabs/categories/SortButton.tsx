@@ -26,7 +26,7 @@ export default SortButton;
 
 const styles = StyleSheet.create({
   button: {
-    padding: 12,
+    padding: 8,
     borderWidth: 1,
     borderRadius: 8,
     borderColor: "rgba(0, 0, 0, 0.1)",

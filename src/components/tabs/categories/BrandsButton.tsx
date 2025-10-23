@@ -1,7 +1,6 @@
-import { Pressable, StyleSheet, Text } from "react-native";
+import { Pressable, StyleSheet } from "react-native";
 import React from "react";
 import { FontAwesome6 } from "@expo/vector-icons";
-import { theme } from "@/src/constants/theme";
 
 type BrandsButtonProps = {
   onPress: () => void;
@@ -17,13 +16,11 @@ const BrandsButton = ({ onPress, selectedBrands }: BrandsButtonProps) => {
           pressed && styles.buttonPressed,
         ]}
         onPress={onPress}>
-        <Text style={styles.text}>
-          Brands {selectedBrands.length > 0 && `(${selectedBrands.length})`}
-        </Text>
         <FontAwesome6
           name="chevron-down"
-          size={16}
+          size={20}
           color="rgba(0, 0, 0, 0.5)"
+          style={styles.icon}
         />
       </Pressable>
     </>
@@ -34,7 +31,7 @@ export default BrandsButton;
 
 const styles = StyleSheet.create({
   button: {
-    padding: 12,
+    padding: 8,
     borderWidth: 1,
     borderRadius: 8,
     borderColor: "rgba(0, 0, 0, 0.1)",
@@ -45,9 +42,8 @@ const styles = StyleSheet.create({
   buttonPressed: {
     backgroundColor: "rgba(0, 0, 0, 0.05)",
   },
-  text: {
-    fontSize: 14,
-    fontFamily: theme.fonts.regular,
-    color: "rgba(0, 0, 0, 0.5)",
+  icon: {
+    width: 20,
+    height: 20,
   },
 });

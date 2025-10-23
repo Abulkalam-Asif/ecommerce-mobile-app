@@ -65,7 +65,7 @@ export default SubCategoriesNav;
 
 const styles = StyleSheet.create({
   container: {
-    paddingVertical: 14,
+    paddingVertical: 8,
     flexDirection: "row",
     alignItems: "center",
     gap: 8,
@@ -78,7 +78,7 @@ const styles = StyleSheet.create({
   },
 
   subCategoryButton: {
-    paddingVertical: 10,
+    paddingVertical: 6,
     paddingHorizontal: 8,
     backgroundColor: "#F6F7FB",
     borderWidth: 1,

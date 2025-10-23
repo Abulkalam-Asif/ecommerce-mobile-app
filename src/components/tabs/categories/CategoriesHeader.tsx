@@ -37,7 +37,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     flexDirection: "row",
     alignItems: "center",
-    paddingVertical: 16,
+    paddingTop: 16,
+    paddingBottom: 8,
   },
   categoryNameText: {
     fontFamily: theme.fonts.semibold,

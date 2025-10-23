@@ -76,7 +76,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     borderRadius: 10,
     backgroundColor: theme.colors.background_2,
-    width: 165,
+    width: 150,
     paddingVertical: 28,
     flexDirection: "column",
     gap: 12,

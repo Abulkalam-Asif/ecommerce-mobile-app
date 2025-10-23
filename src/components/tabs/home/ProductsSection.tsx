@@ -39,12 +39,12 @@ export default ProductsSection;
 
 const styles = StyleSheet.create({
   container: {
-    paddingVertical: 20,
+    paddingVertical: 10,
   },
   titleText: {
     fontFamily: theme.fonts.semibold,
     fontSize: 16,
-    marginBottom: 12,
+    marginBottom: 4,
     paddingHorizontal: 20,
   },
   scrollContent: {
