@@ -2,16 +2,17 @@ import React, { useState } from "react";
 import { StyleSheet, View, Modal, Dimensions, Pressable } from "react-native";
 import { Image } from "expo-image";
 import { Ionicons } from "@expo/vector-icons";
-import { useMainBanner } from "@/src/hooks/useBanners";
+import { useGetPopupBanner } from "@/src/hooks/useBanners";
+import { router } from "expo-router";
 
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get("window");
 
-const MainBanner = () => {
-  const { data: mainBanner, isLoading } = useMainBanner();
+const PopupBanner = () => {
+  const { data: popupBanner, isLoading } = useGetPopupBanner();
   const [isVisible, setIsVisible] = useState(true);
 
   // Don't show if loading, no data, or user has dismissed
-  if (isLoading || !mainBanner || !isVisible) {
+  if (isLoading || !popupBanner || !isVisible) {
     return null;
   }
 
@@ -20,9 +21,14 @@ const MainBanner = () => {
   };
 
   const handleBannerPress = () => {
-    // Handle banner tap - navigate based on LinkType, CategoryId, ProductId
-    console.log("Main banner pressed:", mainBanner);
-    // You can add navigation logic here based on the banner's LinkType
+    // Close modal first before navigation
+    setIsVisible(false);
+
+    if (popupBanner.linkType === "product") {
+      router.push(`/product-details?id=${popupBanner.link}`);
+    } else if (popupBanner.linkType === "category") {
+      router.push(`/categories?categoryId=${popupBanner.link}`);
+    }
   };
 
   return (
@@ -41,9 +47,9 @@ const MainBanner = () => {
           {/* Banner Image */}
           <Pressable onPress={handleBannerPress} style={styles.imageContainer}>
             <Image
-              source={mainBanner.PictureUrl}
+              source={popupBanner.imageUrl}
               style={styles.bannerImage}
-              contentFit="cover"
+              contentFit="contain"
             />
           </Pressable>
         </View>
@@ -52,7 +58,7 @@ const MainBanner = () => {
   );
 };
 
-export default MainBanner;
+export default PopupBanner;
 
 const styles = StyleSheet.create({
   overlay: {

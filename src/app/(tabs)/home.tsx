@@ -5,11 +5,11 @@ import HomeSearchSection from "@/src/components/tabs/home/HomeSearchSection";
 import CategoriesSection from "@/src/components/tabs/home/categories-section/CategoriesSection";
 import BestPricesSection from "@/src/components/tabs/home/categories-section/BestPricesSection";
 // import ProductsSection from "@/src/components/tabs/home/ProductsSection";
-// import MainBanner from "@/src/components/tabs/home/MainBanner";
 // import { theme } from "@/src/constants/theme";
 // import { useCategories, useCategoryProducts } from "@/src/hooks/useCategories";
 import HomeTopBg from "@/src/components/tabs/home/HomeTopBg";
 import Sidebar from "@/src/components/tabs/home/Sidebar";
+import PopupBanner from "@/src/components/tabs/home/PopupBanner";
 
 const HomeScreen = () => {
   // const { data: categories, isLoading: loadingCategories } = useCategories();
@@ -56,8 +56,8 @@ const HomeScreen = () => {
         /> */}
       </ScrollView>
 
-      {/* Main Banner Modal - Shows on app start */}
-      {/* <MainBanner /> */}
+      {/* Popup Banner Modal - Shows on app start */}
+      <PopupBanner />
       <Sidebar
         isOpen={isSidebarOpen}
         closeSidebarHandler={() => setIsSidebarOpen(false)}

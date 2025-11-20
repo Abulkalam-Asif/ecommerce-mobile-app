@@ -3,3 +3,4 @@ export * from "./legacy.types";
 
 export * from "./product.types";
 export * from "./category.types";
+export * from "./banner.types";

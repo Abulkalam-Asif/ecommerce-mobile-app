@@ -22,8 +22,14 @@ import { theme } from "@/src/constants/theme";
 import { useQueryClient } from "@tanstack/react-query";
 import { queryKeys } from "@/src/lib/react-query";
 import Loading from "@/src/components/common/Loading";
+import { parseCategoryId } from "@/src/types";
+import { useLocalSearchParams } from "expo-router";
 
 const CategoriesScreen = () => {
+  const { categoryId: searchParamCategoryId } = useLocalSearchParams<{
+    categoryId: string;
+  }>();
+
   const queryClient = useQueryClient();
 
   const {
@@ -36,6 +42,20 @@ const CategoriesScreen = () => {
 
   const [currentCategoryId, setCurrentCategoryId] = useState("");
   const [currentSubCategoryId, setCurrentSubCategoryId] = useState("");
+
+  useEffect(() => {
+    if (searchParamCategoryId) {
+      const parsedCategoryId = parseCategoryId(searchParamCategoryId);
+      // Set category and subcategory based on parsed result
+      if (parsedCategoryId.isSubCategory) {
+        setCurrentCategoryId(parsedCategoryId.categoryId);
+        setCurrentSubCategoryId(parsedCategoryId.subCategoryId || "");
+      } else {
+        setCurrentCategoryId(parsedCategoryId.categoryId);
+        setCurrentSubCategoryId("");
+      }
+    }
+  }, [searchParamCategoryId]);
 
   // Set initial category when data loads
   useEffect(() => {

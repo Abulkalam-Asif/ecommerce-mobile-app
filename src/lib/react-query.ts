@@ -124,16 +124,8 @@ export const queryKeys = {
   // BANNERS
   // ========================================
   banners: {
-    // Base key - invalidates ALL banner queries
-    all: ["banners"] as const,
-
-    // By placement
-    byPlacement: (placement: string) =>
-      [...queryKeys.banners.all, "placement", placement] as const,
-
-    // Special banners
-    slides: () => [...queryKeys.banners.all, "slides"] as const,
-    main: () => [...queryKeys.banners.all, "main"] as const,
+    popup: ["banners", "popup"] as const,
+    homepage: ["banners", "homepage"] as const,
   },
 
   // ========================================
