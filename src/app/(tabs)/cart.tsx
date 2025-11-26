@@ -63,7 +63,7 @@ export default function CartScreen() {
   // Transform cart items to match CartItem component expectations
   const cartItems = cart?.items.map((item, index) => ({
     Id: index + 1, // Temporary ID for component
-    MainImageUrl: require("@/src/assets/default-image.png"), // Placeholder
+    MainImageUrl: item.imageUrl || require("@/src/assets/default-image.png"), // Use stored image or placeholder
     Name: item.productName,
     Price: item.unitPrice,
     OldPrice: undefined, // Could be added later

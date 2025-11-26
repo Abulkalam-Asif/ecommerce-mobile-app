@@ -137,6 +137,7 @@ const ProductCard = ({ product, cardWidth = 150 }: Props) => {
                 productName: product.info.name,
                 unitPrice: product.price,
                 batchId: `batch_${product.id}`, // Use a default batch ID
+                imageUrl: primaryImage,
               });
             } else {
               // Navigate to cart

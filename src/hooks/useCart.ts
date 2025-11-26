@@ -21,14 +21,16 @@ export function useAddToCart() {
       productName,
       unitPrice,
       quantity = 1,
-      batchId
+      batchId,
+      imageUrl = ""
     }: {
       productId: string;
       productName: string;
       unitPrice: number;
       quantity?: number;
       batchId: string;
-    }) => cartService.addToCart(productId, productName, unitPrice, quantity, batchId),
+      imageUrl?: string;
+    }) => cartService.addToCart(productId, productName, unitPrice, quantity, batchId, imageUrl),
     onSuccess: () => {
       // Invalidate cart to refetch
       queryClient.invalidateQueries({

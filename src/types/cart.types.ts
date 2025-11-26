@@ -4,6 +4,7 @@ export interface CartItem {
   quantity: number;
   unitPrice: number;
   batchId: string;
+  imageUrl: string;
   addedAt: Date;
 }
 

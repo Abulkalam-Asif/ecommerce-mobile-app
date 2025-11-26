@@ -10,6 +10,7 @@ type AddToCartContainerProps = {
   productName: string;
   quantityInCart: number;
   price: number;
+  imageUrl?: string;
 };
 
 const AddToCartContainer = ({
@@ -17,6 +18,7 @@ const AddToCartContainer = ({
   productName,
   quantityInCart,
   price,
+  imageUrl = "",
 }: AddToCartContainerProps) => {
   // Cart mutations
   const addToCartMutation = useAddToCart();
@@ -85,6 +87,7 @@ const AddToCartContainer = ({
                 productName,
                 unitPrice: price,
                 batchId: `batch_${productId}`,
+                imageUrl,
               });
             } else {
               // Navigate to cart

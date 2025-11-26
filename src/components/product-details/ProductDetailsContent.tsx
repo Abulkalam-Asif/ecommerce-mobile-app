@@ -161,6 +161,7 @@ const ProductDetailsContent = ({
               productName={product.info.name}
               quantityInCart={quantityInCart}
               price={product.price}
+              imageUrl={product.multimedia?.images?.[0] || ""}
             />
 
             <View style={styles.descriptionContainer}>

@@ -1,27 +1,14 @@
 import { StyleSheet, Text, View } from "react-native";
 import React from "react";
 import { theme } from "@/src/constants/theme";
-import { tempCartItems } from "@/temp/home/products/tempCartItems";
+import { useCart } from "@/src/hooks/useCart";
 
 const BillingDetailsSection = () => {
-  // Calculate totals from cart items
-  const calculateSubtotal = () => {
-    return tempCartItems.reduce((total, item) => {
-      return total + item.Price * item.quantity;
-    }, 0);
-  };
+  const { data: cart } = useCart();
 
-  const calculateSavings = () => {
-    return tempCartItems.reduce((total, item) => {
-      if (item.OldPrice && item.OldPrice > item.Price) {
-        return total + (item.OldPrice - item.Price) * item.quantity;
-      }
-      return total;
-    }, 0);
-  };
-
-  const subtotal = calculateSubtotal();
-  const savings = calculateSavings();
+  // Calculate totals from real cart items
+  const subtotal = cart?.total || 0;
+  const savings = 0; // Could be calculated from discounts in future
   const serviceFee = 20;
   const deliveryFee = 0; // Free delivery
   const originalDeliveryFee = 120;

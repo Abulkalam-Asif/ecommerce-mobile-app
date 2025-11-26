@@ -60,7 +60,7 @@ export const cartService = {
   },
 
   // Add item to cart
-  async addToCart(productId: string, productName: string, unitPrice: number, quantity: number = 1, batchId: string): Promise<void> {
+  async addToCart(productId: string, productName: string, unitPrice: number, quantity: number = 1, batchId: string, imageUrl: string = ""): Promise<void> {
     try {
       const cartRef = doc(db, CARTS_COLLECTION, CURRENT_CUSTOMER_ID);
       const cartSnap = await getDoc(cartRef);
@@ -85,6 +85,7 @@ export const cartService = {
           quantity,
           unitPrice,
           batchId,
+          imageUrl,
           addedAt: new Date(),
         };
         items.push(newItem);
