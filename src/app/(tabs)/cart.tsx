@@ -4,7 +4,7 @@ import GeneralTopBar from "@/src/components/general/GeneralTopBar";
 import CartItem from "@/src/components/tabs/cart/CartItem";
 import { theme } from "@/src/constants/theme";
 import { router } from "expo-router";
-import { useCart, useUpdateCartItem, useRemoveFromCart, useClearCart, useAddToCart } from "@/src/hooks/useCart";
+import { useCart, useUpdateCartItem, useRemoveFromCart, useClearCart } from "@/src/hooks/useCart";
 
 export default function CartScreen() {
   const isLoggedIn = true;
@@ -13,7 +13,6 @@ export default function CartScreen() {
   const { data: cart, isLoading, error } = useCart();
 
   // Cart mutations
-  const addToCartMutation = useAddToCart();
   const updateCartItemMutation = useUpdateCartItem();
   const removeFromCartMutation = useRemoveFromCart();
   const clearCartMutation = useClearCart();
@@ -72,25 +71,17 @@ export default function CartScreen() {
     productId: item.productId, // Keep original ID for operations
   })) || [];
 
+  // Check if cart meets minimum order requirement
+  const cartTotal = cart?.total || 0;
+  const minimumOrderAmount = 1500;
+  const canProceedToCheckout = cartTotal >= minimumOrderAmount;
+
   return (
     <View style={styles.mainContainer}>
       <GeneralTopBar text="My Cart" />
       <View style={styles.infoContainer}>
         <Text style={styles.itemsCountText}>{cartItems.length} items</Text>
         <View style={styles.buttonRow}>
-          <Pressable
-            onPress={() => addToCartMutation.mutate({
-              productId: `product${Date.now()}`,
-              productName: `Test Product ${cartItems.length + 1}`,
-              unitPrice: Math.floor(Math.random() * 500) + 100,
-              batchId: `batch${Date.now()}`,
-            })}
-            style={({ pressed }) => [
-              styles.addItemButton,
-              pressed && styles.addItemButtonPressed,
-            ]}>
-            <Text style={styles.addItemText}>Add Test Item</Text>
-          </Pressable>
           <Pressable
             onPress={handleClearCart}
             style={({ pressed }) => [pressed && styles.clearCartButtonPressed]}>
@@ -130,17 +121,27 @@ export default function CartScreen() {
         <Pressable
           style={({ pressed }) => [
             styles.proceedButton,
-            pressed && styles.proceedButtonPressed,
+            !canProceedToCheckout && styles.proceedButtonDisabled,
+            pressed && canProceedToCheckout && styles.proceedButtonPressed,
           ]}
           onPress={() => {
+            if (!canProceedToCheckout) return;
+
             if (isLoggedIn) {
               router.push("/checkout");
             } else {
               router.push("/login");
             }
-          }}>
-          <Text style={styles.proceedButtonText}>
-            {isLoggedIn ? "Proceed to Checkout" : "Login /Create Account"}
+          }}
+          disabled={!canProceedToCheckout}>
+          <Text style={[
+            styles.proceedButtonText,
+            !canProceedToCheckout && styles.proceedButtonTextDisabled
+          ]}>
+            {isLoggedIn
+              ? (canProceedToCheckout ? "Proceed to Checkout" : `Add Rs. ${minimumOrderAmount - cartTotal} more to proceed`)
+              : "Login /Create Account"
+            }
           </Text>
         </Pressable>
       </View>
@@ -169,24 +170,7 @@ const styles = StyleSheet.create({
   },
   buttonRow: {
     flexDirection: "row",
-    justifyContent: "space-between",
-    gap: 10,
-  },
-  addItemButton: {
-    backgroundColor: theme.colors.primary,
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-    borderRadius: 6,
-    flex: 1,
-  },
-  addItemButtonPressed: {
-    opacity: 0.8,
-  },
-  addItemText: {
-    fontSize: 12,
-    fontFamily: theme.fonts.medium,
-    color: "#fff",
-    textAlign: "center",
+    justifyContent: "flex-end",
   },
   clearCartButtonPressed: {
     opacity: 0.6,
@@ -243,10 +227,18 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
+  proceedButtonDisabled: {
+    backgroundColor: theme.colors.background,
+    borderWidth: 1,
+    borderColor: theme.colors.placeholder,
+  },
   proceedButtonText: {
     fontSize: 16,
     fontFamily: theme.fonts.semibold,
     color: "#fff",
+  },
+  proceedButtonTextDisabled: {
+    color: theme.colors.text_secondary,
   },
   proceedButtonPressed: {
     opacity: 0.8,

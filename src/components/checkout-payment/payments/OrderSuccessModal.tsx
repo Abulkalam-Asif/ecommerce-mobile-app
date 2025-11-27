@@ -124,7 +124,7 @@ const styles = StyleSheet.create({
     borderColor: theme.colors.primary,
   },
   buttonText: {
-    fontSize: 14,
+    fontSize: 12,
     fontFamily: theme.fonts.semibold,
   },
   primaryButtonText: {
