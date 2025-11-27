@@ -106,6 +106,7 @@ export const queryKeys = {
     featured: () => [...queryKeys.products.lists(), "featured"] as const,
     new: () => [...queryKeys.products.lists(), "new"] as const,
     onSale: () => [...queryKeys.products.lists(), "onSale"] as const,
+    bestPrices: (limit: number) => [...queryKeys.products.lists(), "bestPrices", limit] as const,
 
     // Search
     search: (query: string, filters?: Record<string, any>) =>

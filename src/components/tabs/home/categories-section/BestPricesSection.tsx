@@ -1,13 +1,13 @@
-import { StyleSheet, View, ScrollView, Text, Pressable } from "react-native";
-import React from "react";
 import { theme } from "@/src/constants/theme";
+import { useBestPriceProducts } from "@/src/hooks/useBestPriceProducts";
+import { IProduct } from "@/src/types";
 import { Image } from "expo-image";
 import { router } from "expo-router";
-import { tempBestPrices } from "@/temp/home/bestPrices/tempBestPrices";
-import { IProduct } from "@/src/types";
+import React from "react";
+import { Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 
 const BestPricesSection = () => {
-  const bestPricesData = tempBestPrices;
+  const { data: bestPricesData, isLoading, error } = useBestPriceProducts(6);
 
   const handleCardPress = (product: IProduct) => {
     router.push({
@@ -16,6 +16,35 @@ const BestPricesSection = () => {
     });
   };
 
+  if (isLoading) {
+    return (
+      <View style={styles.container}>
+        <Text style={styles.sectionTitleText}>Our Best Prices</Text>
+        <ScrollView
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          contentContainerStyle={styles.scrollContent}>
+          {[...Array(6)].map((_, index) => (
+            <View key={index} style={[styles.card, styles.loadingCard]} />
+          ))}
+        </ScrollView>
+      </View>
+    );
+  }
+
+  if (error || !bestPricesData || bestPricesData.length === 0) {
+    return null; // Don't show section if no data or error
+  }
+
+  // Transform ProductWithDiscount to IProduct format
+  const transformedProducts: IProduct[] = bestPricesData.map((product, index) => ({
+    Id: parseInt(product.id) || index + 1, // Fallback to index if id is not numeric
+    Name: product.info.name,
+    MainImageUrl: product.multimedia.images[0] || require("@/src/assets/default-image.png"),
+    Price: product.price - product.savings, // Discounted price
+    OldPrice: product.price, // Original price
+  }));
+
   return (
     <View style={styles.container}>
       <Text style={styles.sectionTitleText}>Our Best Prices</Text>
@@ -23,29 +52,29 @@ const BestPricesSection = () => {
         horizontal
         showsHorizontalScrollIndicator={false}
         contentContainerStyle={styles.scrollContent}>
-        {bestPricesData.map((card: IProduct) => {
-          const discountPercentage = card.OldPrice
-            ? Math.round(((card.OldPrice - card.Price) / card.OldPrice) * 100)
+        {transformedProducts.map((product) => {
+          const discountPercentage = product.OldPrice
+            ? Math.round(((product.OldPrice - product.Price) / product.OldPrice) * 100)
             : 0;
+          const savings = product.OldPrice ? product.OldPrice - product.Price : 0;
+
           return (
             <Pressable
-              onPress={() => handleCardPress(card)}
-              key={card.Id}
+              onPress={() => handleCardPress(product)}
+              key={product.Id}
               style={styles.card}>
               <Image
-                key={card.Id}
-                source={card.MainImageUrl}
+                source={product.MainImageUrl}
                 style={styles.image}
                 contentFit="contain"
+                placeholder={require("@/src/assets/default-image.png")}
               />
               <Text style={styles.discountPercentageText}>
                 {discountPercentage}% off
               </Text>
-              {card.OldPrice && (
-                <Text style={styles.discountText}>
-                  Save Rs. {card.OldPrice - card.Price}
-                </Text>
-              )}
+              <Text style={styles.discountText}>
+                Save Rs. {Math.round(savings)}
+              </Text>
             </Pressable>
           );
         })}
@@ -103,5 +132,9 @@ const styles = StyleSheet.create({
   discountText: {
     fontSize: 12,
     fontFamily: theme.fonts.semibold,
+  },
+  loadingCard: {
+    backgroundColor: theme.colors.background_2,
+    opacity: 0.5,
   },
 });
