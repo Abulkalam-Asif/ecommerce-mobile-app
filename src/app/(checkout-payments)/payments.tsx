@@ -7,6 +7,8 @@ import { useCart, useClearCart } from "@/src/hooks/useCart";
 import { usePlaceOrder } from "@/src/hooks/useOrders";
 import { useGetActivePaymentMethods } from "@/src/hooks/usePaymentMethods";
 import { updateOrderWithPaymentProof, uploadPaymentProof } from "@/src/utils/uploadPaymentProof";
+import { calculateOrderDiscount } from "@/src/utils/orderDiscounts";
+import { generateOrderId } from "@/src/utils/orderIdGenerator";
 import React, { useEffect, useState } from "react";
 import { Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 
@@ -156,43 +158,86 @@ export default function PaymentsScreen() {
             pressed && styles.proceedButtonPressed,
             isProceedDisabled && styles.proceedButtonDisabled,
           ]}
-          onPress={() => {
-            if (!selectedMethod || !paymentMethods || !cart || cart.items.length === 0) return;
+          onPress={async () => {
+            console.log('🚀 Proceed button pressed');
+            console.log('📋 Selected method:', selectedMethod);
+            console.log('🛒 Cart:', cart);
+            console.log('💳 Payment methods:', paymentMethods);
+
+            if (!selectedMethod || !paymentMethods || !cart || cart.items.length === 0) {
+              console.log('❌ Checkout validation failed');
+              return;
+            }
 
             const selectedPaymentMethod = paymentMethods.find(
               (method) => getDisplayName(method.type) === selectedMethod
             );
 
-            if (!selectedPaymentMethod) return;
+            if (!selectedPaymentMethod) {
+              console.log('❌ Payment method not found');
+              return;
+            }
 
-            // Convert cart items to order items format
-            const orderItems = cart.items.map(item => ({
-              productId: item.productId,
-              productName: item.productName,
-              quantity: item.quantity,
-              unitPrice: item.unitPrice,
-              discount: 0, // Could be calculated from product discounts
-              subtotal: item.unitPrice * item.quantity,
-              batchId: item.batchId,
-            }));
+            console.log('✅ Starting checkout process...');
 
-            // Calculate order totals
-            const subtotal = cart.total;
-            const discount = 0; // In real app, calculate from order-level discounts
-            const deliveryFee = 100; // In real app, calculate based on location/delivery options
-            const total = subtotal + deliveryFee - discount;
+            try {
+              // Generate order ID first
+              const orderId = generateOrderId();
 
-            placeOrderMutation.mutate({
-              customerId: mockCustomerId,
-              items: orderItems,
-              subtotal,
-              discount,
-              deliveryFee,
-              total,
-              paymentMethod: selectedPaymentMethod,
-              deliveryAddress: mockDeliveryAddress,
-              proofOfPaymentUrl: undefined, // Will be uploaded after order placement
-            });
+              // Upload payment proof if screenshot exists
+              let proofOfPaymentUrl: string | undefined;
+              if (screenshot) {
+                proofOfPaymentUrl = await uploadPaymentProof(screenshot, orderId);
+              }
+
+              // Convert cart items to order items format
+              const orderItems = cart.items.map(item => ({
+                productId: item.productId,
+                productName: item.productName,
+                quantity: item.quantity,
+                unitPrice: item.unitPrice,
+                discount: 0, // Could be calculated from product discounts
+                subtotal: item.unitPrice * item.quantity,
+                batchId: item.batchId,
+              }));
+
+              // Calculate order totals
+              const cartTotalAfterProductDiscounts = cart.total; // cart.total already includes product discounts
+              const deliveryFee = 100; // In real app, calculate based on location/delivery options
+
+              console.log('🔍 About to calculate order discount...');
+              // Calculate order-level discount (applied to subtotal after product discounts)
+              const { discountAmount: orderDiscount, discountName } = await calculateOrderDiscount(cartTotalAfterProductDiscounts);
+              console.log('✅ Order discount calculation completed');
+
+              // Subtotal for display should be after order discount (consistent with cart screen)
+              const subtotalForDisplay = cartTotalAfterProductDiscounts - orderDiscount;
+
+              console.log('🛒 Checkout calculation:');
+              console.log('📦 Cart total (after product discounts):', cartTotalAfterProductDiscounts);
+              console.log('💰 Order discount applied:', orderDiscount, discountName ? `(${discountName})` : '');
+              console.log('📊 Subtotal for display (after order discount):', subtotalForDisplay);
+              console.log('🚚 Delivery fee:', deliveryFee);
+              console.log('💵 Final total:', subtotalForDisplay + deliveryFee);
+
+              const total = subtotalForDisplay + deliveryFee;
+
+              placeOrderMutation.mutate({
+                customerId: mockCustomerId,
+                items: orderItems,
+                subtotal: cartTotalAfterProductDiscounts, // Original subtotal before order discount
+                discount: orderDiscount,
+                deliveryFee,
+                total,
+                paymentMethod: selectedPaymentMethod,
+                deliveryAddress: mockDeliveryAddress,
+                proofOfPaymentUrl,
+                orderId, // Use pre-generated ID
+              });
+            } catch (error) {
+              console.error('Failed to process order:', error);
+              alert('Failed to process order. Please try again.');
+            }
           }}
           disabled={isProceedDisabled}>
           <Text style={styles.proceedButtonText}>

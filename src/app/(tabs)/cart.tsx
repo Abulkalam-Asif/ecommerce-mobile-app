@@ -1,10 +1,11 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { FlatList, Pressable, StyleSheet, Text, View } from "react-native";
 import GeneralTopBar from "@/src/components/general/GeneralTopBar";
 import CartItem from "@/src/components/tabs/cart/CartItem";
 import { theme } from "@/src/constants/theme";
 import { router } from "expo-router";
 import { useCart, useUpdateCartItem, useRemoveFromCart, useClearCart } from "@/src/hooks/useCart";
+import { calculateOrderDiscount } from "@/src/utils/orderDiscounts";
 
 export default function CartScreen() {
   const isLoggedIn = true;
@@ -12,10 +13,36 @@ export default function CartScreen() {
   // Fetch cart data
   const { data: cart, isLoading, error } = useCart();
 
+  // Order discount state
+  const [orderDiscount, setOrderDiscount] = useState(0);
+  const [discountName, setDiscountName] = useState<string | undefined>();
+
   // Cart mutations
   const updateCartItemMutation = useUpdateCartItem();
   const removeFromCartMutation = useRemoveFromCart();
   const clearCartMutation = useClearCart();
+
+  // Calculate order discount when cart changes
+  useEffect(() => {
+    const calculateDiscount = async () => {
+      if (cart?.total) {
+        try {
+          const { discountAmount, discountName: name } = await calculateOrderDiscount(cart.total);
+          setOrderDiscount(discountAmount);
+          setDiscountName(name);
+        } catch (error) {
+          console.error('Failed to calculate order discount:', error);
+          setOrderDiscount(0);
+          setDiscountName(undefined);
+        }
+      } else {
+        setOrderDiscount(0);
+        setDiscountName(undefined);
+      }
+    };
+
+    calculateDiscount();
+  }, [cart?.total]);
 
   const handleQuantityChange = (id: number, newQuantity: number) => {
     // Find the actual productId from the transformed item
@@ -73,6 +100,7 @@ export default function CartScreen() {
 
   // Check if cart meets minimum order requirement
   const cartTotal = cart?.total || 0;
+  const finalTotal = cartTotal - orderDiscount;
   const minimumOrderAmount = 1500;
   const canProceedToCheckout = cartTotal >= minimumOrderAmount;
 
@@ -112,9 +140,27 @@ export default function CartScreen() {
         </View>
 
         <View style={styles.amountRow}>
-          <Text style={styles.amountLabel}>Amount</Text>
+          <Text style={styles.amountLabel}>Subtotal</Text>
           <Text style={styles.amountValue}>
             Rs. {cart?.total || 0}
+          </Text>
+        </View>
+
+        {orderDiscount > 0 && (
+          <View style={styles.amountRow}>
+            <Text style={styles.discountLabel}>
+              Order Discount{discountName ? ` (${discountName})` : ''}
+            </Text>
+            <Text style={styles.discountValue}>
+              -Rs. {orderDiscount}
+            </Text>
+          </View>
+        )}
+
+        <View style={[styles.amountRow, styles.totalRow]}>
+          <Text style={styles.totalLabel}>Total</Text>
+          <Text style={styles.totalValue}>
+            Rs. {finalTotal}
           </Text>
         </View>
 
@@ -219,6 +265,32 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontFamily: theme.fonts.semibold,
     color: theme.colors.secondary,
+  },
+  discountLabel: {
+    fontSize: 14,
+    fontFamily: theme.fonts.medium,
+    color: theme.colors.primary,
+  },
+  discountValue: {
+    fontSize: 14,
+    fontFamily: theme.fonts.semibold,
+    color: theme.colors.primary,
+  },
+  totalRow: {
+    borderTopWidth: 1,
+    borderTopColor: "#f0f0f0",
+    paddingTop: 8,
+    marginTop: 4,
+  },
+  totalLabel: {
+    fontSize: 18,
+    fontFamily: theme.fonts.bold,
+    color: theme.colors.text,
+  },
+  totalValue: {
+    fontSize: 18,
+    fontFamily: theme.fonts.bold,
+    color: theme.colors.primary,
   },
   proceedButton: {
     backgroundColor: theme.colors.primary,

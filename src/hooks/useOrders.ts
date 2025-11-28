@@ -38,6 +38,7 @@ export function usePlaceOrder() {
       paymentMethod: PaymentMethod;
       deliveryAddress: string;
       proofOfPaymentUrl?: string;
+      orderId?: string;
     }) => orderService.placeOrder(orderData),
     onSuccess: (orderId, variables) => {
       // Invalidate customer orders to refetch

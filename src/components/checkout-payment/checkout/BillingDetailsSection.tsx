@@ -1,14 +1,41 @@
 import { StyleSheet, Text, View } from "react-native";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { theme } from "@/src/constants/theme";
 import { useCart } from "@/src/hooks/useCart";
+import { calculateOrderDiscount } from "@/src/utils/orderDiscounts";
 
 const BillingDetailsSection = () => {
   const { data: cart } = useCart();
 
+  // Order discount state
+  const [orderDiscount, setOrderDiscount] = useState(0);
+  const [discountName, setDiscountName] = useState<string | undefined>();
+
+  // Calculate order discount when cart changes
+  useEffect(() => {
+    const calculateDiscount = async () => {
+      if (cart?.total) {
+        try {
+          const { discountAmount, discountName: name } = await calculateOrderDiscount(cart.total);
+          setOrderDiscount(discountAmount);
+          setDiscountName(name);
+        } catch (error) {
+          console.error('Failed to calculate order discount:', error);
+          setOrderDiscount(0);
+          setDiscountName(undefined);
+        }
+      } else {
+        setOrderDiscount(0);
+        setDiscountName(undefined);
+      }
+    };
+
+    calculateDiscount();
+  }, [cart?.total]);
+
   // Calculate totals from real cart items
-  const subtotal = cart?.total || 0;
-  const savings = 0; // Could be calculated from discounts in future
+  const cartTotal = cart?.total || 0;
+  const subtotal = cartTotal - orderDiscount; // Subtotal after order discount
   const serviceFee = 20;
   const deliveryFee = 0; // Free delivery
   const originalDeliveryFee = 120;
@@ -21,14 +48,23 @@ const BillingDetailsSection = () => {
         <View style={styles.billingRow}>
           <View style={styles.leftSection}>
             <Text style={styles.labelText}>Subtotal</Text>
-            {savings > 0 && (
-              <View style={styles.savingsTag}>
-                <Text style={styles.savingsText}>Saved Rs.{savings}</Text>
+            {orderDiscount > 0 && (
+              <View style={styles.discountTag}>
+                <Text style={styles.discountText}>
+                  {discountName ? `${discountName} applied` : 'Discount applied'}
+                </Text>
               </View>
             )}
           </View>
           <Text style={styles.amount}>Rs. {subtotal}</Text>
         </View>
+
+        {orderDiscount > 0 && (
+          <View style={styles.billingRow}>
+            <Text style={styles.labelText}>Order Discount</Text>
+            <Text style={styles.discountAmount}>-Rs. {orderDiscount}</Text>
+          </View>
+        )}
 
         <View style={styles.billingRow}>
           <Text style={styles.labelText}>Service Fee</Text>
@@ -101,20 +137,22 @@ const styles = StyleSheet.create({
     fontFamily: theme.fonts.regular,
     color: theme.colors.text,
   },
-  savingsTag: {
-    backgroundColor: theme.colors.tag,
-    fontSize: 8,
-    lineHeight: 16,
-    fontFamily: theme.fonts.medium,
+  discountTag: {
+    backgroundColor: theme.colors.primary,
     paddingHorizontal: 6,
     paddingVertical: 2,
     borderRadius: 10,
-    color: "black",
+    marginLeft: 8,
   },
-  savingsText: {
+  discountText: {
     fontSize: 10,
     fontFamily: theme.fonts.semibold,
-    color: "#000",
+    color: "#fff",
+  },
+  discountAmount: {
+    fontSize: 12,
+    fontFamily: theme.fonts.semibold,
+    color: theme.colors.primary,
   },
   freeDeliveryTag: {
     backgroundColor: theme.colors.primary,
