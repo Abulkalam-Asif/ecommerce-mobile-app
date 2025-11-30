@@ -17,8 +17,8 @@ const OrdersScreen = () => {
   // Fetch real orders from database
   const { data: orders, isLoading, error } = useGetCustomerOrders(mockCustomerId);
 
-  // Map Order status to OrderItem status
-  const mapOrderStatus = (status: string): "in-process" | "completed" | "cancelled" => {
+  // Map Order status to tab filter
+  const mapOrderToTab = (status: string): "in-process" | "completed" | "cancelled" => {
     switch (status) {
       case "pending":
       case "confirmed":
@@ -46,7 +46,7 @@ const OrdersScreen = () => {
   // Filter orders based on active tab
   const filteredOrders = orders?.filter((order) => {
     if (activeTab === "all") return true;
-    return mapOrderStatus(order.status) === activeTab;
+    return mapOrderToTab(order.status) === activeTab;
   }) || [];
 
   // Handle loading state
@@ -94,7 +94,7 @@ const OrdersScreen = () => {
               date={formatDate(order.createdAt)}
               itemCount={order.items.reduce((total, item) => total + item.quantity, 0)}
               price={order.total}
-              status={mapOrderStatus(order.status)}
+              status={order.status as "pending" | "confirmed" | "shipped" | "delivered" | "cancelled" | "refunded"}
             />
           ))
         )}

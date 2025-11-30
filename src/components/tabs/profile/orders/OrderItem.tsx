@@ -4,7 +4,7 @@ import { theme } from "@/src/constants/theme";
 import { FontAwesome6, MaterialCommunityIcons } from "@expo/vector-icons";
 import { router } from "expo-router";
 
-type OrderStatus = "in-process" | "completed" | "cancelled";
+type OrderStatus = "pending" | "confirmed" | "shipped" | "delivered" | "cancelled" | "refunded";
 
 type OrderItemProps = {
   date: string;
@@ -23,35 +23,52 @@ const OrderItem = ({
 }: OrderItemProps) => {
   const getStatusColor = () => {
     switch (status) {
-      case "in-process":
+      case "pending":
+      case "confirmed":
+      case "shipped":
         return {
           bg: theme.colors.warning_light,
           text: theme.colors.warning,
           icon: theme.colors.warning,
         };
-      case "completed":
+      case "delivered":
         return {
           bg: theme.colors.success_light,
           text: theme.colors.success,
           icon: theme.colors.success,
         };
       case "cancelled":
+      case "refunded":
         return {
           bg: theme.colors.error_light,
           text: theme.colors.error,
           icon: theme.colors.error,
+        };
+      default:
+        return {
+          bg: theme.colors.warning_light,
+          text: theme.colors.warning,
+          icon: theme.colors.warning,
         };
     }
   };
 
   const getStatusText = () => {
     switch (status) {
-      case "in-process":
-        return "In Process";
-      case "completed":
-        return "Completed";
+      case "pending":
+        return "Pending";
+      case "confirmed":
+        return "Confirmed";
+      case "shipped":
+        return "Shipped";
+      case "delivered":
+        return "Delivered";
       case "cancelled":
         return "Cancelled";
+      case "refunded":
+        return "Refunded";
+      default:
+        return status;
     }
   };
 
@@ -86,7 +103,7 @@ const OrderItem = ({
       </View>
 
       <View style={styles.rightContainer}>
-        {status === "completed" && (
+        {status === "delivered" && (
           <Text style={styles.reviewText}>Leave your Review</Text>
         )}
         <View style={[styles.statusBadge, { backgroundColor: colors.bg }]}>
