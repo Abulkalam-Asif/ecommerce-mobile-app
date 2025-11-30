@@ -8,6 +8,7 @@ import { queryClient } from "../lib/react-query";
 import { theme } from "../constants/theme";
 import { ModalProvider } from "../contexts/ModalContext";
 import { ModalPortal } from "../components/common/ModalPortal";
+import NotificationManager from "../components/notifications/NotificationManager";
 
 export default function RootLayout() {
   const fontsLoaded = useMyFonts();
@@ -26,6 +27,7 @@ export default function RootLayout() {
               <Stack.Screen name="(tabs)" />
             </Stack>
             <ModalPortal />
+            <NotificationManager />
           </SafeAreaView>
         </ModalProvider>
       </SafeAreaProvider>
