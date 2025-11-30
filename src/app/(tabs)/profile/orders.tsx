@@ -1,20 +1,77 @@
-import { ScrollView, StyleSheet, View } from "react-native";
+import { ScrollView, StyleSheet, Text, View } from "react-native";
 import React, { useState } from "react";
 import GeneralTopBar from "@/src/components/general/GeneralTopBar";
 import OrderTabs from "@/src/components/tabs/profile/orders/OrderTabs";
 import OrderItem from "@/src/components/tabs/profile/orders/OrderItem";
-import { tempOrders } from "@/temp/orders/tempOrders";
+import { useGetCustomerOrders } from "@/src/hooks/useOrders";
+import { theme } from "@/src/constants/theme";
 
 type OrderTab = "all" | "completed" | "in-process" | "cancelled";
 
-// Temporary order data
+// Mock customer ID - in real app, get from auth context
+const mockCustomerId = "customer123";
+
 const OrdersScreen = () => {
   const [activeTab, setActiveTab] = useState<OrderTab>("all");
 
-  const filteredOrders = tempOrders.filter((order) => {
+  // Fetch real orders from database
+  const { data: orders, isLoading, error } = useGetCustomerOrders(mockCustomerId);
+
+  // Map Order status to OrderItem status
+  const mapOrderStatus = (status: string): "in-process" | "completed" | "cancelled" => {
+    switch (status) {
+      case "pending":
+      case "confirmed":
+      case "shipped":
+        return "in-process";
+      case "delivered":
+        return "completed";
+      case "cancelled":
+      case "refunded":
+        return "cancelled";
+      default:
+        return "in-process";
+    }
+  };
+
+  // Format date from Date object to readable string
+  const formatDate = (date: Date): string => {
+    return date.toLocaleDateString('en-US', {
+      day: 'numeric',
+      month: 'long',
+      year: 'numeric'
+    });
+  };
+
+  // Filter orders based on active tab
+  const filteredOrders = orders?.filter((order) => {
     if (activeTab === "all") return true;
-    return order.status === activeTab;
-  });
+    return mapOrderStatus(order.status) === activeTab;
+  }) || [];
+
+  // Handle loading state
+  if (isLoading) {
+    return (
+      <View style={styles.container}>
+        <GeneralTopBar text="Orders" />
+        <View style={styles.loadingContainer}>
+          <Text style={styles.loadingText}>Loading orders...</Text>
+        </View>
+      </View>
+    );
+  }
+
+  // Handle error state
+  if (error) {
+    return (
+      <View style={styles.container}>
+        <GeneralTopBar text="Orders" />
+        <View style={styles.errorContainer}>
+          <Text style={styles.errorText}>Failed to load orders</Text>
+        </View>
+      </View>
+    );
+  }
 
   return (
     <View style={styles.container}>
@@ -23,16 +80,24 @@ const OrdersScreen = () => {
       <ScrollView
         style={styles.scrollView}
         contentContainerStyle={styles.containerContent}>
-        {filteredOrders.map((order) => (
-          <OrderItem
-            key={order.id}
-            orderId={order.id}
-            date={order.date}
-            itemCount={order.itemCount}
-            price={order.price}
-            status={order.status}
-          />
-        ))}
+        {filteredOrders.length === 0 ? (
+          <View style={styles.emptyContainer}>
+            <Text style={styles.emptyText}>
+              {activeTab === "all" ? "No orders found" : `No ${activeTab} orders`}
+            </Text>
+          </View>
+        ) : (
+          filteredOrders.map((order) => (
+            <OrderItem
+              key={order.id}
+              orderId={order.id}
+              date={formatDate(order.createdAt)}
+              itemCount={order.items.reduce((total, item) => total + item.quantity, 0)}
+              price={order.total}
+              status={mapOrderStatus(order.status)}
+            />
+          ))
+        )}
       </ScrollView>
     </View>
   );
@@ -50,5 +115,36 @@ const styles = StyleSheet.create({
   },
   containerContent: {
     paddingBottom: 100,
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  loadingText: {
+    fontSize: 16,
+    fontFamily: theme.fonts.medium,
+    color: theme.colors.text_secondary,
+  },
+  errorContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  errorText: {
+    fontSize: 16,
+    fontFamily: theme.fonts.medium,
+    color: "red",
+  },
+  emptyContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    paddingVertical: 50,
+  },
+  emptyText: {
+    fontSize: 16,
+    fontFamily: theme.fonts.medium,
+    color: theme.colors.text_secondary,
   },
 });
