@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { FlatList, Pressable, StyleSheet, Text, View } from "react-native";
 import GeneralTopBar from "@/src/components/general/GeneralTopBar";
 import CartItem from "@/src/components/tabs/cart/CartItem";
+import EmptyCart from "@/src/components/tabs/cart/EmptyCart";
 import { theme } from "@/src/constants/theme";
 import { router } from "expo-router";
 import { useCart, useUpdateCartItem, useRemoveFromCart, useClearCart } from "@/src/hooks/useCart";
@@ -104,93 +105,103 @@ export default function CartScreen() {
   const minimumOrderAmount = 1500;
   const canProceedToCheckout = cartTotal >= minimumOrderAmount;
 
+  // Check if cart is empty
+  const isCartEmpty = cartItems.length === 0;
+
   return (
     <View style={styles.mainContainer}>
       <GeneralTopBar text="My Cart" />
-      <View style={styles.infoContainer}>
-        <Text style={styles.itemsCountText}>{cartItems.length} items</Text>
-        <View style={styles.buttonRow}>
-          <Pressable
-            onPress={handleClearCart}
-            style={({ pressed }) => [pressed && styles.clearCartButtonPressed]}>
-            <Text style={styles.clearCartText}>Clear All</Text>
-          </Pressable>
-        </View>
-      </View>
-      <FlatList
-        style={styles.container}
-        contentContainerStyle={styles.containerContent}
-        data={cartItems}
-        renderItem={({ item }) => (
-          <CartItem
-            item={item}
-            onQuantityChange={handleQuantityChange}
-            onRemove={handleRemoveItem}
-          />
-        )}
-        keyExtractor={(item) => item.Id.toString()}
-        showsVerticalScrollIndicator={false}
-      />
-      <View style={styles.summaryContainer}>
-        <View style={styles.minimumOrderRow}>
-          <Text style={styles.minimumOrderText}>Minimum Order Price: </Text>
-          <Text style={[styles.minimumOrderText, styles.minimumOrderValueText]}>
-            1500
-          </Text>
-        </View>
 
-        <View style={styles.amountRow}>
-          <Text style={styles.amountLabel}>Subtotal</Text>
-          <Text style={styles.amountValue}>
-            Rs. {cart?.total || 0}
-          </Text>
-        </View>
-
-        {orderDiscount > 0 && (
-          <View style={styles.amountRow}>
-            <Text style={styles.discountLabel}>
-              Order Discount{discountName ? ` (${discountName})` : ''}
-            </Text>
-            <Text style={styles.discountValue}>
-              -Rs. {orderDiscount}
-            </Text>
+      {isCartEmpty ? (
+        <EmptyCart />
+      ) : (
+        <>
+          <View style={styles.infoContainer}>
+            <Text style={styles.itemsCountText}>{cartItems.length} items</Text>
+            <View style={styles.buttonRow}>
+              <Pressable
+                onPress={handleClearCart}
+                style={({ pressed }) => [pressed && styles.clearCartButtonPressed]}>
+                <Text style={styles.clearCartText}>Clear All</Text>
+              </Pressable>
+            </View>
           </View>
-        )}
+          <FlatList
+            style={styles.container}
+            contentContainerStyle={styles.containerContent}
+            data={cartItems}
+            renderItem={({ item }) => (
+              <CartItem
+                item={item}
+                onQuantityChange={handleQuantityChange}
+                onRemove={handleRemoveItem}
+              />
+            )}
+            keyExtractor={(item) => item.Id.toString()}
+            showsVerticalScrollIndicator={false}
+          />
+          <View style={styles.summaryContainer}>
+            <View style={styles.minimumOrderRow}>
+              <Text style={styles.minimumOrderText}>Minimum Order Price: </Text>
+              <Text style={[styles.minimumOrderText, styles.minimumOrderValueText]}>
+                1500
+              </Text>
+            </View>
 
-        <View style={[styles.amountRow, styles.totalRow]}>
-          <Text style={styles.totalLabel}>Total</Text>
-          <Text style={styles.totalValue}>
-            Rs. {finalTotal}
-          </Text>
-        </View>
+            <View style={styles.amountRow}>
+              <Text style={styles.amountLabel}>Subtotal</Text>
+              <Text style={styles.amountValue}>
+                Rs. {cart?.total || 0}
+              </Text>
+            </View>
 
-        <Pressable
-          style={({ pressed }) => [
-            styles.proceedButton,
-            !canProceedToCheckout && styles.proceedButtonDisabled,
-            pressed && canProceedToCheckout && styles.proceedButtonPressed,
-          ]}
-          onPress={() => {
-            if (!canProceedToCheckout) return;
+            {orderDiscount > 0 && (
+              <View style={styles.amountRow}>
+                <Text style={styles.discountLabel}>
+                  Order Discount{discountName ? ` (${discountName})` : ''}
+                </Text>
+                <Text style={styles.discountValue}>
+                  -Rs. {orderDiscount}
+                </Text>
+              </View>
+            )}
 
-            if (isLoggedIn) {
-              router.push("/checkout");
-            } else {
-              router.push("/login");
-            }
-          }}
-          disabled={!canProceedToCheckout}>
-          <Text style={[
-            styles.proceedButtonText,
-            !canProceedToCheckout && styles.proceedButtonTextDisabled
-          ]}>
-            {isLoggedIn
-              ? (canProceedToCheckout ? "Proceed to Checkout" : `Add Rs. ${minimumOrderAmount - cartTotal} more to proceed`)
-              : "Login /Create Account"
-            }
-          </Text>
-        </Pressable>
-      </View>
+            <View style={[styles.amountRow, styles.totalRow]}>
+              <Text style={styles.totalLabel}>Total</Text>
+              <Text style={styles.totalValue}>
+                Rs. {finalTotal}
+              </Text>
+            </View>
+
+            <Pressable
+              style={({ pressed }) => [
+                styles.proceedButton,
+                !canProceedToCheckout && styles.proceedButtonDisabled,
+                pressed && canProceedToCheckout && styles.proceedButtonPressed,
+              ]}
+              onPress={() => {
+                if (!canProceedToCheckout) return;
+
+                if (isLoggedIn) {
+                  router.push("/checkout");
+                } else {
+                  router.push("/login");
+                }
+              }}
+              disabled={!canProceedToCheckout}>
+              <Text style={[
+                styles.proceedButtonText,
+                !canProceedToCheckout && styles.proceedButtonTextDisabled
+              ]}>
+                {isLoggedIn
+                  ? (canProceedToCheckout ? "Proceed to Checkout" : `Add Rs. ${minimumOrderAmount - cartTotal} more to proceed`)
+                  : "Login /Create Account"
+                }
+              </Text>
+            </Pressable>
+          </View>
+        </>
+      )}
     </View>
   );
 }
