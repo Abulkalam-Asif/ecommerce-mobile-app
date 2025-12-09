@@ -1,7 +1,14 @@
-import { useEffect, useState, useRef } from 'react';
-import { collection, query, where, onSnapshot, doc, getDoc } from 'firebase/firestore';
-import { db } from '@/firebaseConfig';
-import { Order } from '../types';
+import { useEffect, useState, useRef } from "react";
+import {
+  collection,
+  query,
+  where,
+  onSnapshot,
+  doc,
+  getDoc,
+} from "firebase/firestore";
+import { db } from "@/firebaseConfig";
+import { Order } from "../types";
 
 export interface OrderStatusUpdate {
   orderId: string;
@@ -18,7 +25,7 @@ export const useOrderStatusUpdates = (customerId: string) => {
 
   useEffect(() => {
     if (!customerId) {
-      console.log('🔇 Order status listener: No customer ID provided');
+      console.log("🔇 Order status listener: No customer ID provided");
       return;
     }
 
@@ -31,8 +38,8 @@ export const useOrderStatusUpdates = (customerId: string) => {
 
     // Query for customer's orders
     const ordersQuery = query(
-      collection(db, 'ORDERS'),
-      where('customerId', '==', customerId)
+      collection(db, "ORDERS"),
+      where("customerId", "==", customerId)
     );
 
     // Set up real-time listener
@@ -45,31 +52,32 @@ export const useOrderStatusUpdates = (customerId: string) => {
           const orderId = change.doc.id;
           const orderData = change.doc.data();
 
-          if (change.type === 'modified') {
+          if (change.type === "modified") {
             const newStatus = orderData.status;
             const previousStatus = lastSeenStatusesRef.current[orderId];
 
             // Check if status actually changed
             if (previousStatus && previousStatus !== newStatus) {
               // Get full order data
-              const orderDoc = await getDoc(doc(db, 'ORDERS', orderId));
+              const orderDoc = await getDoc(doc(db, "ORDERS", orderId));
               const fullOrderData = orderDoc.data();
 
               if (fullOrderData) {
                 const order: Order = {
                   id: orderId,
-                  customerId: fullOrderData.customerId || '',
+                  customerId: fullOrderData.customerId || "",
                   items: fullOrderData.items || [],
                   subtotal: fullOrderData.subtotal || 0,
                   discount: fullOrderData.discount || 0,
                   deliveryFee: fullOrderData.deliveryFee || 0,
                   total: fullOrderData.total || 0,
                   paymentMethod: fullOrderData.paymentMethod,
-                  paymentStatus: fullOrderData.paymentStatus || 'pending',
-                  paymentStatusHistory: fullOrderData.paymentStatusHistory || [],
+                  paymentStatus: fullOrderData.paymentStatus || "pending",
+                  paymentStatusHistory:
+                    fullOrderData.paymentStatusHistory || [],
                   proofOfPaymentUrl: fullOrderData.proofOfPaymentUrl,
-                  deliveryAddress: fullOrderData.deliveryAddress || '',
-                  status: fullOrderData.status || 'pending',
+                  deliveryAddress: fullOrderData.deliveryAddress || "",
+                  status: fullOrderData.status || "pending",
                   statusHistory: fullOrderData.statusHistory || [],
                   riderId: fullOrderData.riderId,
                   createdAt: fullOrderData.createdAt?.toDate() || new Date(),
@@ -88,12 +96,12 @@ export const useOrderStatusUpdates = (customerId: string) => {
 
             // Update last seen status
             lastSeenStatusesRef.current[orderId] = newStatus;
-
-          } else if (change.type === 'added') {
+          } else if (change.type === "added") {
             // Initialize status for new orders
             const orderData = change.doc.data();
-            lastSeenStatusesRef.current[orderId] = orderData.status || 'pending';
-          } else if (change.type === 'removed') {
+            lastSeenStatusesRef.current[orderId] =
+              orderData.status || "pending";
+          } else if (change.type === "removed") {
             // Clean up removed orders
             delete lastSeenStatusesRef.current[orderId];
           }
@@ -104,7 +112,7 @@ export const useOrderStatusUpdates = (customerId: string) => {
         }
       },
       (error) => {
-        console.error('Order status listener error:', error);
+        console.error("Order status listener error:", error);
       }
     );
 
@@ -116,7 +124,7 @@ export const useOrderStatusUpdates = (customerId: string) => {
 
   // Clear updates after they've been consumed
   const clearUpdates = () => {
-    console.log('🧹 Clearing status updates');
+    console.log("🧹 Clearing status updates");
     setStatusUpdates([]);
   };
 

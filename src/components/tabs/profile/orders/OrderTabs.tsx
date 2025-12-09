@@ -1,8 +1,9 @@
-import { Pressable, StyleSheet, Text, View } from "react-native";
+import { Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 import React from "react";
 import { theme } from "@/src/constants/theme";
+import { OrderStatus } from "@/src/types";
 
-type OrderTab = "all" | "completed" | "in-process" | "cancelled";
+type OrderTab = "all" | OrderStatus;
 
 type OrderTabsProps = {
   activeTab: OrderTab;
@@ -10,95 +11,46 @@ type OrderTabsProps = {
 };
 
 const OrderTabs = ({ activeTab, onTabChange }: OrderTabsProps) => {
+  const tabs: { key: OrderTab; label: string; color: string }[] = [
+    { key: "all", label: "All Orders", color: theme.colors.text },
+    { key: "pending", label: "Pending", color: theme.colors.pending },
+    { key: "confirmed", label: "Confirmed", color: theme.colors.confirmed },
+    { key: "shipped", label: "Shipped", color: theme.colors.shipped },
+    { key: "delivered", label: "Delivered", color: theme.colors.delivered },
+    { key: "cancelled", label: "Cancelled", color: theme.colors.cancelled },
+    { key: "refunded", label: "Refunded", color: theme.colors.refunded },
+  ];
+
   return (
     <View style={styles.container}>
-      <Pressable onPress={() => onTabChange("all")} style={styles.tabButton}>
-        <Text
-          style={[styles.tabText, activeTab === "all" && styles.tabTextActive]}>
-          All Orders
-        </Text>
-        {activeTab === "all" && (
-          <View
-            style={[
-              styles.activeIndicator,
-              {
-                backgroundColor: theme.colors.text,
-              },
-            ]}
-          />
-        )}
-      </Pressable>
-
-      <Pressable
-        onPress={() => onTabChange("completed")}
-        style={styles.tabButton}>
-        <Text
-          style={[
-            styles.tabText,
-            {
-              color: theme.colors.success,
-            },
-            activeTab === "completed" && styles.tabTextActive,
-          ]}>
-          Completed
-        </Text>
-        {activeTab === "completed" && (
-          <View
-            style={[
-              styles.activeIndicator,
-              {
-                backgroundColor: theme.colors.success,
-              },
-            ]}
-          />
-        )}
-      </Pressable>
-
-      <Pressable
-        onPress={() => onTabChange("in-process")}
-        style={styles.tabButton}>
-        <Text
-          style={[
-            styles.tabText,
-            { color: theme.colors.warning },
-            activeTab === "in-process" && styles.tabTextActive,
-          ]}>
-          In Process
-        </Text>
-        {activeTab === "in-process" && (
-          <View
-            style={[
-              styles.activeIndicator,
-              {
-                backgroundColor: theme.colors.warning,
-              },
-            ]}
-          />
-        )}
-      </Pressable>
-
-      <Pressable
-        onPress={() => onTabChange("cancelled")}
-        style={styles.tabButton}>
-        <Text
-          style={[
-            styles.tabText,
-            { color: theme.colors.error },
-            activeTab === "cancelled" && styles.tabTextActive,
-          ]}>
-          Cancelled
-        </Text>
-        {activeTab === "cancelled" && (
-          <View
-            style={[
-              styles.activeIndicator,
-              {
-                backgroundColor: theme.colors.error,
-              },
-            ]}
-          />
-        )}
-      </Pressable>
+      <ScrollView
+        horizontal
+        showsHorizontalScrollIndicator={false}
+        contentContainerStyle={styles.scrollContent}>
+        {tabs.map((tab) => (
+          <Pressable
+            key={tab.key}
+            onPress={() => onTabChange(tab.key)}
+            style={styles.tabButton}>
+            <Text
+              style={[
+                styles.tabText,
+                { color: tab.color },
+                activeTab === tab.key && styles.tabTextActive,
+              ]}>
+              {tab.label}
+            </Text>
+            {activeTab === tab.key && (
+              <View
+                style={[
+                  styles.activeIndicator,
+                  { backgroundColor: tab.color },
+                ]}
+              />
+            )}
+          </Pressable>
+        ))}
+      </ScrollView>
     </View>
   );
 };
@@ -107,10 +59,11 @@ export default OrderTabs;
 
 const styles = StyleSheet.create({
   container: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    paddingHorizontal: 12,
     paddingVertical: 12,
+  },
+  scrollContent: {
+    paddingHorizontal: 12,
+    gap: 20,
   },
   tabButton: {
     paddingBottom: 2,

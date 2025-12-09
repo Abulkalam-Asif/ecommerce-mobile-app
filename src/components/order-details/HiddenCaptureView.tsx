@@ -9,9 +9,9 @@ type HiddenCaptureViewProps = {
   orderId: string;
   subtotal: number;
   serviceFee: number;
-  originalDeliveryFee: number;
+  deliveryFee: number;
   totalAmount: number;
-  savings: number;
+  discount: number;
   getStatusColor: () => string;
   getStatusText: () => string;
 };
@@ -21,9 +21,9 @@ const HiddenCaptureView = ({
   orderId,
   subtotal,
   serviceFee,
-  originalDeliveryFee,
+  deliveryFee,
   totalAmount,
-  savings,
+  discount,
   getStatusColor,
   getStatusText,
 }: HiddenCaptureViewProps) => {
@@ -98,10 +98,10 @@ const HiddenCaptureView = ({
                 <View style={styles.captureRow}>
                   <View style={styles.captureLeftRow}>
                     <Text style={styles.captureLabel}>Subtotal</Text>
-                    {savings > 0 && (
+                    {discount > 0 && (
                       <View style={styles.captureSavingsTag}>
                         <Text style={styles.captureSavingsText}>
-                          -Rs.{savings}
+                          -Rs.{discount}
                         </Text>
                       </View>
                     )}
@@ -122,7 +122,7 @@ const HiddenCaptureView = ({
                     </View>
                   </View>
                   <Text style={styles.captureStrikethrough}>
-                    Rs. {originalDeliveryFee}
+                    Rs. {deliveryFee}
                   </Text>
                 </View>
 

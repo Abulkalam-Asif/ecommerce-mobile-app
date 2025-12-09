@@ -1,7 +1,7 @@
 import React from "react";
 import { Pressable, StyleSheet, Text, View } from "react-native";
 import { theme } from "@/src/constants/theme";
-import { FontAwesome6 } from "@expo/vector-icons";
+import { FontAwesome5, FontAwesome6 } from "@expo/vector-icons";
 import { OrderStatusUpdate } from "@/src/hooks/useOrderStatusUpdates";
 
 interface OrderStatusNotificationProps {
@@ -22,7 +22,7 @@ const OrderStatusNotification = ({
       case "shipped":
         return theme.colors.warning;
       case "delivered":
-        return theme.colors.success;
+        return theme.colors.primary;
       case "cancelled":
       case "refunded":
         return theme.colors.error;
@@ -31,20 +31,56 @@ const OrderStatusNotification = ({
     }
   };
 
-  const getStatusIcon = (status: string) => {
+  const getStatusIcon = (status: React.ReactNode) => {
     switch (status) {
       case "confirmed":
-        return "check-circle";
+        return (
+          <FontAwesome6
+            name={"check"}
+            size={16}
+            color={getStatusColor("confirmed")}
+          />
+        );
       case "shipped":
-        return "truck";
+        return (
+          <FontAwesome6
+            name="truck"
+            size={14}
+            color={getStatusColor("shipped")}
+          />
+        );
       case "delivered":
-        return "box-open";
+        return (
+          <FontAwesome6
+            name="box-open"
+            size={16}
+            color={getStatusColor("delivered")}
+          />
+        );
       case "cancelled":
-        return "times-circle";
+        return (
+          <FontAwesome6
+            name="xmark"
+            size={16}
+            color={getStatusColor("cancelled")}
+          />
+        );
       case "refunded":
-        return "undo";
+        return (
+          <FontAwesome5
+            name="undo"
+            size={16}
+            color={getStatusColor("refunded")}
+          />
+        );
       default:
-        return "info-circle";
+        return (
+          <FontAwesome6
+            name="info"
+            size={16}
+            color={getStatusColor("default")}
+          />
+        );
     }
   };
 
@@ -53,7 +89,7 @@ const OrderStatusNotification = ({
       case "confirmed":
         return "Your order has been confirmed!";
       case "shipped":
-        return "Your order is on the way!";
+        return "Your order has been shipped!";
       case "delivered":
         return "Your order has been delivered!";
       case "cancelled":
@@ -72,12 +108,12 @@ const OrderStatusNotification = ({
   return (
     <Pressable style={styles.container} onPress={onViewOrder}>
       <View style={styles.content}>
-        <View style={[styles.iconContainer, { backgroundColor: statusColor + '20' }]}>
-          <FontAwesome6
-            name={statusIcon}
-            size={18}
-            color={statusColor}
-          />
+        <View
+          style={[
+            styles.iconContainer,
+            { backgroundColor: statusColor + "20" },
+          ]}>
+          {statusIcon}
         </View>
 
         <View style={styles.textContainer}>
@@ -86,8 +122,17 @@ const OrderStatusNotification = ({
           <Text style={styles.orderId}>Order #{update.orderId.slice(-8)}</Text>
         </View>
 
-        <Pressable onPress={onDismiss} style={styles.closeButton}>
-          <FontAwesome6 name="times" size={14} color={theme.colors.text_secondary} />
+        <Pressable
+          onPress={onDismiss}
+          style={({ pressed }) => [
+            styles.closeButton,
+            pressed && styles.closeButtonPressed,
+          ]}>
+          <FontAwesome6
+            name="xmark"
+            size={16}
+            color={theme.colors.text_secondary}
+          />
         </Pressable>
       </View>
     </Pressable>
@@ -105,7 +150,7 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
     shadowRadius: 4,
-    borderLeftWidth: 4,
+    borderLeftWidth: 6,
     borderLeftColor: theme.colors.primary,
   },
   content: {
@@ -143,7 +188,15 @@ const styles = StyleSheet.create({
   },
   closeButton: {
     padding: 4,
+    width: 28,
+    height: 28,
+    borderRadius: 14,
+    justifyContent: "center",
+    alignItems: "center",
     marginLeft: 8,
+  },
+  closeButtonPressed: {
+    backgroundColor: "rgba(0,0,0,0.1)",
   },
 });
 

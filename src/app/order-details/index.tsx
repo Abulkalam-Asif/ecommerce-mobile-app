@@ -3,17 +3,10 @@ import OrderDetailsContent from "@/src/components/order-details/OrderDetailsCont
 import { useLocalSearchParams } from "expo-router";
 
 export default function OrderDetailsScreen() {
-  const { id, status } = useLocalSearchParams<{
+  const { id } = useLocalSearchParams<{
     id: string;
     status?: string;
   }>();
 
-  return (
-    <OrderDetailsContent
-      orderId={id}
-      status={
-        (status as "confirmed" | "completed" | "cancelled") || "confirmed"
-      }
-    />
-  );
+  return <OrderDetailsContent orderId={id} />;
 }

@@ -3,8 +3,8 @@ import React from "react";
 import { theme } from "@/src/constants/theme";
 import { FontAwesome6, MaterialCommunityIcons } from "@expo/vector-icons";
 import { router } from "expo-router";
+import { OrderStatus } from "@/src/types";
 
-type OrderStatus = "pending" | "confirmed" | "shipped" | "delivered" | "cancelled" | "refunded";
 
 type OrderItemProps = {
   date: string;
@@ -21,28 +21,44 @@ const OrderItem = ({
   status,
   orderId,
 }: OrderItemProps) => {
+
   const getStatusColor = () => {
     switch (status) {
       case "pending":
+        return {
+          bg: theme.colors.pending_light,
+          text: theme.colors.pending,
+          icon: theme.colors.pending,
+        }
       case "confirmed":
+        return {
+          bg: theme.colors.confirmed_light,
+          text: theme.colors.confirmed,
+          icon: theme.colors.confirmed,
+        }
       case "shipped":
         return {
-          bg: theme.colors.warning_light,
-          text: theme.colors.warning,
-          icon: theme.colors.warning,
+          bg: theme.colors.shipped_light,
+          text: theme.colors.shipped,
+          icon: theme.colors.shipped,
         };
       case "delivered":
         return {
-          bg: theme.colors.success_light,
-          text: theme.colors.success,
-          icon: theme.colors.success,
+          bg: theme.colors.delivered_light,
+          text: theme.colors.delivered,
+          icon: theme.colors.delivered,
         };
       case "cancelled":
+        return {
+          bg: theme.colors.cancelled_light,
+          text: theme.colors.cancelled,
+          icon: theme.colors.cancelled,
+        };
       case "refunded":
         return {
-          bg: theme.colors.error_light,
-          text: theme.colors.error,
-          icon: theme.colors.error,
+          bg: theme.colors.refunded_light,
+          text: theme.colors.refunded,
+          icon: theme.colors.refunded,
         };
       default:
         return {
@@ -72,6 +88,24 @@ const OrderItem = ({
     }
   };
 
+  const getStatusIcon = () => {
+    switch (status) {
+      case "pending":
+      case "confirmed":
+        return "cart-outline"; // Cart outline - order received and confirmed
+      case "shipped":
+        return "cart-arrow-right"; // Cart with arrow - in transit
+      case "delivered":
+        return "cart-check"; // Cart with checkmark - successfully delivered
+      case "cancelled":
+        return "cart-remove"; // Cart with X - order cancelled
+      case "refunded":
+        return "redo"; // Cart with down arrow - money returned
+      default:
+        return "cart";
+    }
+  };
+
   const colors = getStatusColor();
 
   const handlePress = () => {
@@ -87,11 +121,13 @@ const OrderItem = ({
         pressed && styles.containerPressed,
       ]}>
       <View style={[styles.iconContainer, { backgroundColor: colors.bg }]}>
-        <MaterialCommunityIcons
-          name="cart-check"
-          size={28}
-          color={colors.icon}
-        />
+        {
+          <MaterialCommunityIcons
+            name={getStatusIcon()}
+            size={28}
+            color={colors.icon}
+          />
+        }
       </View>
 
       <View style={styles.contentContainer}>

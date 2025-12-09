@@ -11,6 +11,7 @@ export interface Banner {
 }
 
 export interface BannerMinimal {
+  id: string;
   imageUrl: string;
   linkType: "category" | "product";
   link: string; // Could be categoryId or productId based on linkType

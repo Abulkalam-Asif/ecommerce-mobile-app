@@ -5,6 +5,7 @@ import {
   Text,
   View,
   Alert,
+  ActivityIndicator,
 } from "react-native";
 import React, { useRef, useState } from "react";
 import { theme } from "@/src/constants/theme";
@@ -15,12 +16,11 @@ import {
   FontAwesome6,
   Feather,
 } from "@expo/vector-icons";
-import { tempOrders } from "@/temp/orders/tempOrders";
 import ViewShot from "react-native-view-shot";
 import * as MediaLibrary from "expo-media-library";
 import HiddenCaptureView from "./HiddenCaptureView";
-
-type OrderStatus = "confirmed" | "completed" | "cancelled";
+import { useGetOrderById } from "@/src/hooks/useOrders";
+import { OrderStatus } from "@/src/types";
 
 type OrderDetailsContentProps = {
   orderId?: string;
@@ -33,17 +33,20 @@ const OrderDetailsContent = ({
   const [isBillingDetailsExpanded, setIsBillingDetailsExpanded] =
     useState(true);
   const viewShotRef = useRef<ViewShot>(null);
-  const orderData = tempOrders.find((order) => order.id === orderId);
+
+  // Fetch real order data from Firestore
+  const { data: orderData, isLoading, error } = useGetOrderById(orderId);
 
   const paymentMethodImage = () => {
-    switch (orderData?.paymentMethod) {
-      case "Cash on Delivery":
+    const paymentType = orderData?.paymentMethod?.type;
+    switch (paymentType) {
+      case "cash_on_delivery":
         return require("@/src/assets/icons/payments/cod.png");
-      case "Bank Account":
+      case "bank_transfer":
         return require("@/src/assets/icons/payments/bank.png");
-      case "Easypaisa":
+      case "easypaisa":
         return require("@/src/assets/icons/payments/easypaisa.png");
-      case "JazzCash":
+      case "jazzcash":
         return require("@/src/assets/icons/payments/jazzcash.png");
       default:
         return require("@/src/assets/icons/payments/cod.png");
@@ -52,11 +55,14 @@ const OrderDetailsContent = ({
 
   const getStatusColor = () => {
     switch (orderData?.status) {
-      case "in-process":
+      case "pending":
+      case "confirmed":
+      case "shipped":
         return theme.colors.secondary;
-      case "completed":
+      case "delivered":
         return theme.colors.success;
       case "cancelled":
+      case "refunded":
         return theme.colors.error;
       default:
         return theme.colors.text;
@@ -65,22 +71,29 @@ const OrderDetailsContent = ({
 
   const getStatusText = () => {
     switch (orderData?.status) {
-      case "in-process":
-        return "In Process";
-      case "completed":
-        return "Completed";
+      case "pending":
+        return "Pending";
+      case "confirmed":
+        return "Confirmed";
+      case "shipped":
+        return "Shipped";
+      case "delivered":
+        return "Delivered";
       case "cancelled":
         return "Cancelled";
+      case "refunded":
+        return "Refunded";
       default:
         return "Unknown";
     }
   };
 
-  const subtotal = 880;
-  const savings = 100;
-  const serviceFee = 20;
-  const originalDeliveryFee = 120;
-  const totalAmount = 900;
+  // Calculate billing details from real order data
+  const subtotal = orderData?.subtotal || 0;
+  const discount = orderData?.discount || 0;
+  const serviceFee = 0; // TODO: Add to order type if needed
+  const deliveryFee = orderData?.deliveryFee || 0;
+  const totalAmount = orderData?.total || 0;
 
   const handleDownloadOrderSummary = async () => {
     try {
@@ -116,6 +129,31 @@ const OrderDetailsContent = ({
     }
   };
 
+  // Handle loading state
+  if (isLoading) {
+    return (
+      <View style={styles.mainContainer}>
+        <GeneralTopBar text={`Order #${orderId}`} />
+        <View style={styles.loadingContainer}>
+          <ActivityIndicator size="large" color={theme.colors.primary} />
+          <Text style={styles.loadingText}>Loading order details...</Text>
+        </View>
+      </View>
+    );
+  }
+
+  // Handle error state
+  if (error || !orderData) {
+    return (
+      <View style={styles.mainContainer}>
+        <GeneralTopBar text={`Order #${orderId}`} />
+        <View style={styles.errorContainer}>
+          <Text style={styles.errorText}>Failed to load order details</Text>
+        </View>
+      </View>
+    );
+  }
+
   return (
     <View style={styles.mainContainer}>
       <GeneralTopBar text={`Order #${orderId}`} />
@@ -129,10 +167,13 @@ const OrderDetailsContent = ({
             <View style={styles.orderDetailsLeft}>
               <Text style={styles.orderStatusText}>
                 Order is{" "}
-                <Text style={[styles.statusText, { color: getStatusColor() }]}>
+                <Text style={[styles.statusText, { color: theme.colors[orderData.status] }]}>
                   {getStatusText()}
                 </Text>
-                {orderData?.status === "in-process" && " and will deliver on"}
+                {(orderData.status === "pending" ||
+                  orderData.status === "confirmed" ||
+                  orderData.status === "shipped") &&
+                  " and will deliver on"}
               </Text>
               <Text style={styles.deliveryTimeText}>
                 Friday 26th September 10:00 am
@@ -154,9 +195,7 @@ const OrderDetailsContent = ({
               size={20}
               color={theme.colors.text_secondary}
             />
-            <Text style={styles.addressText}>
-              House 360, PU Main Rd, Quaid-i-Azam Campus, Lahore, Pakistan
-            </Text>
+            <Text style={styles.addressText}>{orderData.deliveryAddress}</Text>
           </View>
         </View>
 
@@ -208,9 +247,11 @@ const OrderDetailsContent = ({
               <View style={styles.billingRow}>
                 <View style={styles.leftSection}>
                   <Text style={styles.billingLabelText}>Subtotal</Text>
-                  {savings > 0 && (
+                  {discount > 0 && (
                     <View style={styles.savingsTag}>
-                      <Text style={styles.savingsText}>Saved Rs.{savings}</Text>
+                      <Text style={styles.savingsText}>
+                        Saved Rs.{discount}
+                      </Text>
                     </View>
                   )}
                 </View>
@@ -230,9 +271,9 @@ const OrderDetailsContent = ({
                   </View>
                 </View>
                 <View style={styles.rightSection}>
-                  {originalDeliveryFee > 0 && (
+                  {deliveryFee > 0 && (
                     <Text style={styles.strikethroughPrice}>
-                      Rs. {originalDeliveryFee}
+                      Rs. {deliveryFee}
                     </Text>
                   )}
                 </View>
@@ -255,34 +296,36 @@ const OrderDetailsContent = ({
         orderId={orderId}
         subtotal={subtotal}
         serviceFee={serviceFee}
-        originalDeliveryFee={originalDeliveryFee}
+        deliveryFee={deliveryFee}
         totalAmount={totalAmount}
-        savings={savings}
+        discount={discount}
         getStatusColor={getStatusColor}
         getStatusText={getStatusText}
       />
 
       {/* Bottom Action Buttons */}
       <View style={styles.bottomButtonContainer}>
-        {orderData?.status === "in-process" && (
-          <>
-            <Pressable
-              style={({ pressed }) => [
-                styles.cancelButton,
-                pressed && styles.buttonPressed,
-              ]}>
-              <Text style={styles.cancelButtonText}>Cancel Order</Text>
-            </Pressable>
-            <Pressable
-              style={({ pressed }) => [
-                styles.editButton,
-                pressed && styles.buttonPressed,
-              ]}>
-              <Text style={styles.editButtonText}>Edit Order</Text>
-            </Pressable>
-          </>
-        )}
-        {orderData?.status === "completed" && (
+        {(orderData.status === "pending" ||
+          orderData.status === "confirmed" ||
+          orderData.status === "shipped") && (
+            <>
+              <Pressable
+                style={({ pressed }) => [
+                  styles.cancelButton,
+                  pressed && styles.buttonPressed,
+                ]}>
+                <Text style={styles.cancelButtonText}>Cancel Order</Text>
+              </Pressable>
+              <Pressable
+                style={({ pressed }) => [
+                  styles.editButton,
+                  pressed && styles.buttonPressed,
+                ]}>
+                <Text style={styles.editButtonText}>Edit Order</Text>
+              </Pressable>
+            </>
+          )}
+        {orderData.status === "delivered" && (
           <Pressable
             style={({ pressed }) => [
               styles.reviewButton,
@@ -555,5 +598,28 @@ const styles = StyleSheet.create({
   },
   buttonPressed: {
     opacity: 0.8,
+  },
+
+  // Loading and Error States
+  loadingContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  loadingText: {
+    fontSize: 16,
+    fontFamily: theme.fonts.medium,
+    color: theme.colors.text_secondary,
+    marginTop: 12,
+  },
+  errorContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  errorText: {
+    fontSize: 16,
+    fontFamily: theme.fonts.medium,
+    color: "red",
   },
 });

@@ -107,3 +107,9 @@ export function useClearCart() {
     },
   });
 }
+
+// Hook for getting cart item count
+export function useCartItemCount() {
+  const cartQuery = useCart();
+  return cartQuery.data ? cartQuery.data.items.length : 0;
+}

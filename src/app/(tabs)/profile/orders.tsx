@@ -5,8 +5,9 @@ import OrderTabs from "@/src/components/tabs/profile/orders/OrderTabs";
 import OrderItem from "@/src/components/tabs/profile/orders/OrderItem";
 import { useGetCustomerOrders } from "@/src/hooks/useOrders";
 import { theme } from "@/src/constants/theme";
+import { OrderStatus } from "@/src/types";
 
-type OrderTab = "all" | "completed" | "in-process" | "cancelled";
+type OrderTab = "all" | OrderStatus;
 
 // Mock customer ID - in real app, get from auth context
 const mockCustomerId = "customer123";
@@ -15,39 +16,27 @@ const OrdersScreen = () => {
   const [activeTab, setActiveTab] = useState<OrderTab>("all");
 
   // Fetch real orders from database
-  const { data: orders, isLoading, error } = useGetCustomerOrders(mockCustomerId);
-
-  // Map Order status to tab filter
-  const mapOrderToTab = (status: string): "in-process" | "completed" | "cancelled" => {
-    switch (status) {
-      case "pending":
-      case "confirmed":
-      case "shipped":
-        return "in-process";
-      case "delivered":
-        return "completed";
-      case "cancelled":
-      case "refunded":
-        return "cancelled";
-      default:
-        return "in-process";
-    }
-  };
+  const {
+    data: orders,
+    isLoading,
+    error,
+  } = useGetCustomerOrders(mockCustomerId);
 
   // Format date from Date object to readable string
   const formatDate = (date: Date): string => {
-    return date.toLocaleDateString('en-US', {
-      day: 'numeric',
-      month: 'long',
-      year: 'numeric'
+    return date.toLocaleDateString("en-US", {
+      day: "numeric",
+      month: "long",
+      year: "numeric",
     });
   };
 
   // Filter orders based on active tab
-  const filteredOrders = orders?.filter((order) => {
-    if (activeTab === "all") return true;
-    return mapOrderToTab(order.status) === activeTab;
-  }) || [];
+  const filteredOrders =
+    orders?.filter((order) => {
+      if (activeTab === "all") return true;
+      return order.status === activeTab;
+    }) || [];
 
   // Handle loading state
   if (isLoading) {
@@ -83,7 +72,9 @@ const OrdersScreen = () => {
         {filteredOrders.length === 0 ? (
           <View style={styles.emptyContainer}>
             <Text style={styles.emptyText}>
-              {activeTab === "all" ? "No orders found" : `No ${activeTab} orders`}
+              {activeTab === "all"
+                ? "No orders found"
+                : `No ${activeTab} orders`}
             </Text>
           </View>
         ) : (
@@ -92,9 +83,20 @@ const OrdersScreen = () => {
               key={order.id}
               orderId={order.id}
               date={formatDate(order.createdAt)}
-              itemCount={order.items.reduce((total, item) => total + item.quantity, 0)}
+              itemCount={order.items.reduce(
+                (total, item) => total + item.quantity,
+                0
+              )}
               price={order.total}
-              status={order.status as "pending" | "confirmed" | "shipped" | "delivered" | "cancelled" | "refunded"}
+              status={
+                order.status as
+                | "pending"
+                | "confirmed"
+                | "shipped"
+                | "delivered"
+                | "cancelled"
+                | "refunded"
+              }
             />
           ))
         )}

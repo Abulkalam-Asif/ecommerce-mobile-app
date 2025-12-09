@@ -1,12 +1,18 @@
 import React, { useEffect, useRef } from "react";
-import { StyleSheet, View, PanResponder, Animated, Dimensions } from "react-native";
+import {
+  StyleSheet,
+  View,
+  PanResponder,
+  Animated,
+  Dimensions,
+} from "react-native";
 import { useOrderStatusUpdates } from "@/src/hooks/useOrderStatusUpdates";
 import OrderStatusNotification from "./OrderStatusNotification";
 import { useQueryClient } from "@tanstack/react-query";
 import { queryKeys } from "@/src/lib/react-query";
 import { router } from "expo-router";
 
-const { width: screenWidth } = Dimensions.get('window');
+const { width: screenWidth } = Dimensions.get("window");
 
 const NotificationManager = () => {
   const mockCustomerId = "customer123"; // In real app, get from auth context
@@ -40,14 +46,18 @@ const NotificationManager = () => {
 
     // Cleanup timers on unmount
     return () => {
-      Object.values(autoDismissTimers.current).forEach(timer => clearTimeout(timer));
+      Object.values(autoDismissTimers.current).forEach((timer) =>
+        clearTimeout(timer)
+      );
       autoDismissTimers.current = {};
     };
   }, [statusUpdates, clearUpdates, queryClient]);
 
   const handleDismissNotification = (updateId: string) => {
     // Clear auto-dismiss timer for this notification
-    const key = `${updateId}-${statusUpdates.find(u => u.orderId === updateId)?.timestamp.getTime()}`;
+    const key = `${updateId}-${statusUpdates
+      .find((u) => u.orderId === updateId)
+      ?.timestamp.getTime()}`;
     if (autoDismissTimers.current[key]) {
       clearTimeout(autoDismissTimers.current[key]);
       delete autoDismissTimers.current[key];
@@ -58,7 +68,9 @@ const NotificationManager = () => {
 
   const handleViewOrder = (orderId: string) => {
     // Clear all timers when navigating
-    Object.values(autoDismissTimers.current).forEach(timer => clearTimeout(timer));
+    Object.values(autoDismissTimers.current).forEach((timer) =>
+      clearTimeout(timer)
+    );
     autoDismissTimers.current = {};
 
     clearUpdates();
@@ -133,8 +145,7 @@ const SwipeableNotification = ({ update, onDismiss, onViewOrder }: any) => {
           opacity,
         },
       ]}
-      {...panResponder.current.panHandlers}
-    >
+      {...panResponder.current.panHandlers}>
       <OrderStatusNotification
         update={update}
         onDismiss={onDismiss}

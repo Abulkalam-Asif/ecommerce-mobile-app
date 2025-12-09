@@ -17,6 +17,20 @@ export const theme = {
     warning_light: "#FAE4B4",
     error: "#D74443",
     error_light: "#F7D3D4",
+
+    // Order Status Colors
+    pending: "#F59E0B", // Amber/Yellow - Waiting for action
+    pending_light: "#FEF3C7",
+    confirmed: "#3B82F6", // Blue - Confirmed and ready
+    confirmed_light: "#DBEAFE",
+    shipped: "#8B5CF6", // Purple - In transit
+    shipped_light: "#EDE9FE",
+    delivered: "#537D2B", // Green - Successfully completed
+    delivered_light: "#EAFCD9",
+    cancelled: "#EF4444", // Red - Cancelled/Failed
+    cancelled_light: "#FEE2E2",
+    refunded: "#F97316", // Orange - Money returned
+    refunded_light: "#FFEDD5",
   },
   light_colors: [
     "#FFE8B4",

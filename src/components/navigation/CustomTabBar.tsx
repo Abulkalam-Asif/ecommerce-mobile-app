@@ -5,12 +5,15 @@ import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import { theme } from "@/src/constants/theme";
 import { Image } from "expo-image";
+import { useCartItemCount } from "@/src/hooks/useCart";
 
 const CustomTabBar: React.FC<BottomTabBarProps> = ({
   state,
   descriptors,
   navigation,
 }) => {
+  const cartItemCount = useCartItemCount();
+
   const handleQuickOrder = () => {
     // Handle WhatsApp quick order
     const phoneNumber = "+923207303810"; // Replace with your WhatsApp business number
@@ -128,7 +131,16 @@ const CustomTabBar: React.FC<BottomTabBarProps> = ({
                 styles.tabItem,
                 pressed && styles.tabItemPressed,
               ]}>
-              {getTabIcon(route.name, isFocused)}
+              <View>
+                {getTabIcon(route.name, isFocused)}
+                {route.name === "cart" && cartItemCount > 0 && (
+                  <View style={styles.badge}>
+                    <Text style={styles.badgeText}>
+                      {cartItemCount > 9 ? "9+" : cartItemCount}
+                    </Text>
+                  </View>
+                )}
+              </View>
               <Text
                 style={[
                   styles.tabLabel,
@@ -207,6 +219,25 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.3,
     shadowRadius: 8,
     elevation: 10,
+  },
+
+  badge: {
+    position: "absolute",
+    top: -4,
+    right: -8,
+    backgroundColor: "red",
+    borderRadius: 8,
+    width: 16,
+    height: 16,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  badgeText: {
+    color: "white",
+    fontSize: 9,
+    fontFamily: theme.fonts.semibold,
+    fontWeight: "600",
+    lineHeight: 9,
   },
 });
 
