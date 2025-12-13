@@ -3,20 +3,26 @@ import React from "react";
 import { Image } from "expo-image";
 import { theme } from "@/src/constants/theme";
 import { getResponsiveValue } from "@/src/utils/getResponsiveValue";
+import { router } from "expo-router";
 
 type CategoryCardProps = {
+  id: string;
   name: string;
   imageSource?: string;
   backgroundColor?: string;
 };
 
 const CategoryCard = ({
+  id,
   imageSource,
   name,
   backgroundColor,
 }: CategoryCardProps) => {
   return (
     <Pressable
+      onPress={() => {
+        router.push(`/categories?categoryId=${id}`);
+      }}
       style={({ pressed }) => [styles.card, pressed && styles.cardPressed]}>
       <View style={[styles.imageContainer, { backgroundColor }]}>
         <Image

@@ -6,6 +6,7 @@ import OrderItem from "@/src/components/tabs/profile/orders/OrderItem";
 import { useGetCustomerOrders } from "@/src/hooks/useOrders";
 import { theme } from "@/src/constants/theme";
 import { OrderStatus } from "@/src/types";
+import Loading from "@/src/components/common/Loading";
 
 type OrderTab = "all" | OrderStatus;
 
@@ -44,7 +45,7 @@ const OrdersScreen = () => {
       <View style={styles.container}>
         <GeneralTopBar text="Orders" />
         <View style={styles.loadingContainer}>
-          <Text style={styles.loadingText}>Loading orders...</Text>
+          <Loading text="Loading orders..." />
         </View>
       </View>
     );
@@ -88,15 +89,7 @@ const OrdersScreen = () => {
                 0
               )}
               price={order.total}
-              status={
-                order.status as
-                | "pending"
-                | "confirmed"
-                | "shipped"
-                | "delivered"
-                | "cancelled"
-                | "refunded"
-              }
+              status={order.status}
             />
           ))
         )}

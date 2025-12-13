@@ -147,4 +147,30 @@ export const categoryService = {
       throw error;
     }
   },
+
+  // Get special categories for homepage
+  async getSpecialCategoriesForHomepage(): Promise<Category[]> {
+    try {
+      const categoriesRef = collection(db, CATEGORIES_COLLECTION);
+      const q = query(
+        categoriesRef,
+        where("isActive", "==", true),
+        where("showOnHomepage", "==", true),
+        where("type", "==", "special"),
+        orderBy("displayOrder", "asc")
+      );
+      const snapshot = await getDocs(q);
+
+      const categories = snapshot.docs.map((doc) =>
+        firestoreToCategory(doc.id, doc.data())
+      );
+      return categories;
+    } catch (error) {
+      console.error(
+        "Error fetching special categories for homepage at [getSpecialCategoriesForHomepage]: ",
+        error
+      );
+      throw error;
+    }
+  },
 };

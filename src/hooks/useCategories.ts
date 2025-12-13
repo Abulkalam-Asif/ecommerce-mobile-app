@@ -33,3 +33,15 @@ export function useGetAllCategoriesWithSubCategories() {
     staleTime: 1000 * 60 * 5, // 5 minutes - categories don't change often
   });
 }
+
+// Hook for fetching special categories for homepage
+export function useGetSpecialCategoriesForHomepage() {
+  return useQuery({
+    queryKey: queryKeys.categories.list({ special: true, homepage: true }),
+    queryFn: () => categoryService.getSpecialCategoriesForHomepage(),
+    staleTime: 1000 * 60 * 5, // 5 minutes
+    retry: 2, // Retry twice on failure
+    retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 30000), // Exponential backoff
+  });
+}
+

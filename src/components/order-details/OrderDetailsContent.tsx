@@ -167,7 +167,11 @@ const OrderDetailsContent = ({
             <View style={styles.orderDetailsLeft}>
               <Text style={styles.orderStatusText}>
                 Order is{" "}
-                <Text style={[styles.statusText, { color: theme.colors[orderData.status] }]}>
+                <Text
+                  style={[
+                    styles.statusText,
+                    { color: theme.colors[orderData.status] },
+                  ]}>
                   {getStatusText()}
                 </Text>
                 {(orderData.status === "pending" ||
@@ -266,13 +270,13 @@ const OrderDetailsContent = ({
               <View style={styles.billingRow}>
                 <View style={styles.leftSection}>
                   <Text style={styles.billingLabelText}>Delivery Fee</Text>
-                  <View style={styles.freeDeliveryTag}>
+                  {/* <View style={styles.freeDeliveryTag}>
                     <Text style={styles.freeDeliveryText}>Free Delivery</Text>
-                  </View>
+                  </View> */}
                 </View>
                 <View style={styles.rightSection}>
                   {deliveryFee > 0 && (
-                    <Text style={styles.strikethroughPrice}>
+                    <Text style={styles.billingAmountText}>
                       Rs. {deliveryFee}
                     </Text>
                   )}
@@ -305,9 +309,9 @@ const OrderDetailsContent = ({
 
       {/* Bottom Action Buttons */}
       <View style={styles.bottomButtonContainer}>
-        {(orderData.status === "pending" ||
-          orderData.status === "confirmed" ||
-          orderData.status === "shipped") && (
+        {/* Show options to cancel or edit order only if status is pending and payment method is cash on delivery */}
+        {orderData.status === "pending" &&
+          orderData.paymentMethod.type === "cash_on_delivery" && (
             <>
               <Pressable
                 style={({ pressed }) => [

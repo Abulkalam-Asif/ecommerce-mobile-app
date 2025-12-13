@@ -51,8 +51,11 @@ export const queryKeys = {
 
     // List variations
     lists: () => [...queryKeys.categories.all, "list"] as const,
-    list: (filters?: { withSubCategories?: boolean }) =>
-      [...queryKeys.categories.lists(), filters] as const,
+    list: (filters?: {
+      withSubCategories?: boolean;
+      special?: boolean;
+      homepage?: boolean;
+    }) => [...queryKeys.categories.lists(), filters] as const,
 
     // Single category detail
     details: () => [...queryKeys.categories.all, "detail"] as const,

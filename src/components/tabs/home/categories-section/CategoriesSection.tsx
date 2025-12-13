@@ -69,6 +69,7 @@ const CategoriesSection = () => {
                 imageSource={category.image}
                 name={category.name}
                 backgroundColor={theme.colors.background_2}
+                id={category.id}
               />
             ))}
           </View>
